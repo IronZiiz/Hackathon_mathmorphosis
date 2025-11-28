@@ -1,5 +1,29 @@
 import streamlit as st
+from streamlit_carousel import carousel
 
+CARD_STYLE_BOXES  = """
+    border:1px solid #ddd; 
+    border-radius:12px; 
+    padding:20px; 
+    text-align:center;
+    background-color:#fafafa;
+    height:300px;               
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start; 
+    """
+CARD_STYLE_CARDS = """
+    border:1px solid #ddd;
+    border-radius:12px;
+    padding:20px;
+    text-align:left;
+    background-color:#fafafa;
+    height:180px;               
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    gap:20px;
+"""
 def home_view():
 
     st.markdown(
@@ -21,36 +45,148 @@ def home_view():
             font-size:1.1rem;
             color:#555;
         ">
-            Ferramenta interativa desenvolvida pela CPA para visualizar os resultados das pesquisas 
+            Ferramenta interativa desenvolvida pela Equipe Mathmorphosis para visualizar os resultados das pesquisas 
             realizadas junto a alunos e servidores da Universidade Federal do Paraná.
         </p>
         """,
         unsafe_allow_html=True
     )
+    st.write("")  
+    st.write("")  
+    carousel([
+    {
+        "img": "https://picsum.photos/800/600?random=1",
+        "title": "",
+        "text": ""
+    },
+    {
+        "img": "https://picsum.photos/800/600?random=2",
+        "title": "",
+        "text": ""
+    },
+    {
+        "img": "https://picsum.photos/800/600?random=3",
+        "title": "",
+        "text": ""
+    },
+    ])
+
+
 
     st.write("")  
+    st.write("")  
+    st.markdown(
+                """
+                <h1 style="text-align:center; font-size:2.4rem; font-weight:700;">
+                    Como funciona?
+                </h1>
+                """,
+                unsafe_allow_html=True
+            )
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown(
+            f"""
+            <div style="{CARD_STYLE_BOXES}">
+                <div style="font-size:2rem;">1</div>
+                <h3 style="margin-top:10px;">nome etapa</h3>
+                <p>texto etapa</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.write("")
 
-    CARD_STYLE = """
-    border:1px solid #ddd; 
-    border-radius:12px; 
-    padding:16px; 
-    text-align:center;
-    background-color:#fafafa;
-    height:260px;               /* altura fixa */
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-start; /* garante alinhamento consistente */
-"""
+        st.markdown(
+            f"""
+            <div style="{CARD_STYLE_BOXES}">
+                <div style="font-size:2rem;">4️</div>
+                <h3 style="margin-top:10px;">nome etapa</h3>
+                <p>texto etapa</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with col2: 
+        st.markdown(
+                    f"""
+                    <div style="{CARD_STYLE_BOXES}">
+                        <div style="font-size:2rem;">2️</div>
+                        <h3 style="margin-top:10px;">nome etapa</h3>
+                        <p>texto etapa</p>
+                    """,
+                    unsafe_allow_html=True,
+                )
+        st.write("")
+        st.markdown(
+                    f"""
+                    <div style="{CARD_STYLE_BOXES}">
+                        <div style="font-size:2rem;">5️</div>
+                        <h3 style="margin-top:10px;">nome etapa</h3>
+                        <p>texto etapa</p>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+    with col3:
+        st.markdown(
+                f"""
+                <div style="{CARD_STYLE_BOXES}">
+                    <div style="font-size:2rem;">3️</div>
+                    <h3 style="margin-top:10px;">nome etapa</h3>
+                    <p>texto etapa</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        st.write("")
+        st.markdown(
+                f"""
+                <div style="{CARD_STYLE_BOXES}">
+                    <div style="font-size:2rem;">6️</div>
+                    <h3 style="margin-top:10px;">nome etapa</h3>
+                    <p>texto etapa</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
+    st.write("")  
+    st.write("")  
+
+    st.markdown(
+        """
+        <h1 style="text-align:center; font-size:2.4rem; font-weight:700;">
+            Formato das Pesquisas
+        </h1>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        """
+        <p style="
+            text-align:center;
+            max-width:750px;
+            margin:auto;
+            font-size:1.1rem;
+            color:#555;
+        ">
+            As pesquisas são compostas por questões apresentadas na forma de afirmações com três alternativas para o respondente.
+        </p>
+        """,
+        unsafe_allow_html=True)
+    
+    
     col1, col2, col3 = st.columns(3)
 
     with col1:
         st.markdown(
             f"""
-            <div style="{CARD_STYLE}">
-                <div style="font-size:2rem;">📊</div>
-                <h3 style="margin-top:10px;">Visualização Intuitiva</h3>
-                <p>Gráficos e tabelas interativas para análise de frequências absolutas e relativas.</p>
+            <div style="{CARD_STYLE_BOXES}">
+                <div style="font-size:2rem;">✅</div>
+                <h3 style="margin-top:10px;">Concordo</h3>
+                <p>Indica que o respondente concorda com a afirmação apresentada</p>
             </div>
             """,
             unsafe_allow_html=True,
@@ -59,10 +195,10 @@ def home_view():
     with col2:
         st.markdown(
             f"""
-            <div style="{CARD_STYLE}">
-                <div style="font-size:2rem;">📚</div>
-                <h3 style="margin-top:10px;">10 Dimensões Avaliativas</h3>
-                <p>Análise completa seguindo os 5 eixos do SINAES com todas as dimensões de avaliação.</p>
+            <div style="{CARD_STYLE_BOXES}">
+                <div style="font-size:2rem;">❌</div>
+                <h3 style="margin-top:10px;">Discordo</h3>
+                <p>Indica que o respondente discorda da afirmação apresentada</p>
             </div>
             """,
             unsafe_allow_html=True,
@@ -71,11 +207,121 @@ def home_view():
     with col3:
         st.markdown(
             f"""
-            <div style="{CARD_STYLE}">
-                <div style="font-size:2rem;">🌎</div>
-                <h3 style="margin-top:10px;">Acesso Público</h3>
-                <p>Dados impessoais disponíveis para toda a comunidade acadêmica e sociedade.</p>
+            <div style="{CARD_STYLE_BOXES}">
+                <div style="font-size:2rem;">🔵</div>
+                <h3 style="margin-top:10px;">Desconheço</h3>
+                <p>Indica que o respondente não tem conhecimento sobre o tema</p>
+            </div>
+            """,
+            unsafe_allow_html=True,)
+        
+    st.write("")  
+    st.write("")  
+    
+    st.markdown(
+        """
+        <h2 style="text-align:center; font-size:2.4rem; font-weight:700;">
+            Métricas Dísponíveis
+        </h2>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        """
+        <p style="
+            text-align:center;
+            max-width:750px;
+            margin:auto;
+            font-size:1.1rem;
+            color:#555;
+        ">
+            As métricas são compostas de valores que trazem um panorama geral e também específicas de cada pesquisa e pergunta.
+        </p>
+        """,
+        unsafe_allow_html=True)
+    
+    
+    col1, col2 = st.columns(2)
+
+
+    with col1: 
+        st.markdown(
+            f"""
+            <div style="{CARD_STYLE_CARDS}">
+                <div style="font-size:2rem;">📶</div>
+                <p>
+                    <span style="font-weight:700;">Frequência Absoluta e Relativa: </span>
+                    Contagem total de respostas e percentuais por alternativa para cada questão.
+                </p>
             </div>
             """,
             unsafe_allow_html=True,
         )
+
+        st.write("")  
+        st.markdown(
+            f"""
+            <div style="{CARD_STYLE_CARDS}">
+                <div style="font-size:2rem;">🎓</div>
+                <p>
+                    <span style="font-weight:700;">Comparativo por Nível: </span>
+                    Comparação entre Curso, Setor e UFPR como um todo.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    with col2: 
+        st.markdown(
+            f"""
+            <div style="{CARD_STYLE_CARDS}">
+                <div style="font-size:2rem;">🏛️</div>
+                <p>
+                    <span style="font-weight:700;">Análise por Dimensão: </span>
+                    Resultados agrupados por dimensão e eixo avaliativo do SINAES.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        st.write("")  
+        st.markdown(
+            f"""
+            <div style="{CARD_STYLE_CARDS}">
+                <div style="font-size:2rem;">📊</div>
+                <p>
+                    <span style="font-weight:700;">Índices Gerais: </span>
+                    Concordância, discordância e desconhecimento consolidados.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    st.write("")  
+    st.write("")  
+
+
+    st.markdown(
+    """
+    <p style="
+        text-align:left;
+        max-width:750px;
+        margin:auto;
+        font-size:0.75rem;
+        color:#555;
+        opacity:0.7;
+        line-height:1;
+    ">
+        <span style="font-weight:700; opacity:1;">Fundamento Legal</span> 
+        A Lei nº 10.861 de 14/04/2004 que instituiu o SINAES, no artigo 11, prevê que cada instituição de ensino superior tenha Comissão Própria de Avaliação (CPA) com "atribuições de condução dos processos de avaliação internos da instituição, de sistematização e de prestação das informações solicitadas pelo INEP".<br><br>
+        A avaliação institucional é coordenada pela CPA com periodicidade anual, resultando em um Relatório Anual de Avaliação protocolado no MEC até 31 de março do ano seguinte.
+    </p>
+    """,
+    unsafe_allow_html=True
+)
+
+
+    

@@ -28,7 +28,7 @@ def home_view():
 
     st.markdown(
         """
-        <h1 style="text-align:center; font-size:2.4rem; font-weight:700;">
+        <h1 style="text-align:center; font-size:3.4rem; font-weight:700;">
             Visualização dos Resultados da 
             <span style="color:#2563eb;">Avaliação</span> da UFPR
         </h1>
@@ -53,6 +53,7 @@ def home_view():
     )
     st.write("")  
     st.write("")  
+    
     carousel([
     {
         "img": "https://picsum.photos/800/600?random=1",

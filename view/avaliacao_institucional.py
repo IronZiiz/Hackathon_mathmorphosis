@@ -3,10 +3,11 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
+
+BORDER = 1
 def avaliacao_institucional_view():
 
-    # Configuração da Página
-    st.set_page_config(page_title="Resultados Avaliação Institucional - UFPR", layout="wide")
+    st.set_page_config(page_title="Resultados Avaliação Institucional - UFPR")
 
 
     @st.cache_data
@@ -18,7 +19,7 @@ def avaliacao_institucional_view():
                 'O curso promove a interdisciplinaridade?',
                 'O curso promove a interdisciplinaridade?',
                 'O curso promove a interdisciplinaridade?',
-                'A infraestrutura é adequada?', 
+                'A infraestrutura é adequada?',
                 'A infraestrutura é adequada?',
                 'A infraestrutura é adequada?',
                 'A comunicação institucional é eficiente?',
@@ -38,8 +39,6 @@ def avaliacao_institucional_view():
 
     # Sidebar
     st.sidebar.header("Filtros da Consulta")
-
-    # Filtro de Ano
     anos_disponiveis = df['ANO'].unique()
     ano_sel = st.sidebar.selectbox("Ano/Período", anos_disponiveis)
 
@@ -65,7 +64,7 @@ def avaliacao_institucional_view():
             base = dataframe.groupby(['RESPOSTA']).size().reset_index(name='Contagem')
             base['Total'] = dataframe.shape[0]
             merged = base
-        
+
         merged['Percentual'] = (merged['Contagem'] / merged['Total']) * 100
         return merged
 
@@ -74,27 +73,49 @@ def avaliacao_institucional_view():
     df_setor = df[(df['SETOR'] == setor_sel) & (df['ANO'] == ano_sel)] # Benchmark Setor
     df_ufpr = df[df['ANO'] == ano_sel] # Benchmark Global
 
-    st.title(f"📊 Resultados: {curso_sel}")
+    
     st.markdown(f"**Setor:** {setor_sel} | **Ano:** {ano_sel}")
 
-    # Abas para separar visões (Geral vs Detalhada)
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.metric(label="Total Respondentes",
+                          border=BORDER,
+                          value= 0000)
+        
+    with col2: 
+        st.metric(label="Concordância",
+                          border=BORDER,
+                          value= 0000)
+    with col3:
+        st.metric(label="Discordância",
+                          border=BORDER,
+                          value= 0000)
+        
+    with col4: 
+        st.metric(label="Desconhecimento",
+                          border=BORDER,
+                          value= 0000)
+        
+        
     tab1, tab2, tab3, tab4 = st.tabs(["Visão por Dimensão", "Detalhe por Pergunta (Comparativo)", "Insights Avançados", "Análises Estratégicas"])
+   
 
     with tab1:
         st.markdown("### Resultados Agrupados por Dimensão ")
         st.write("Visão consolidada das respostas agrupadas pelos eixos do SINAES.")
-        
+
         # Agrupa dados do curso selecionado por Dimensão e Resposta
         dimensao_stats = calcular_frequencias(df_curso, 'DIMENSAO')
-        
+
         # Cores personalizadas para seguir a lógica semântica (Verde=Bom, Vermelho=Ruim)
         color_map = {'Concordo': '#2ecc71', 'Discordo': '#e74c3c', 'Desconheço': '#95a5a6'}
-        
+
         fig_dim = px.bar(
-            dimensao_stats, 
-            x="Percentual", 
-            y="DIMENSAO", 
-            color="RESPOSTA", 
+            dimensao_stats,
+            x="Percentual",
+            y="DIMENSAO",
+            color="RESPOSTA",
             orientation='h',
             color_discrete_map=color_map,
             text_auto='.1f',
@@ -106,26 +127,26 @@ def avaliacao_institucional_view():
     with tab2:
         st.markdown("### Comparativo: Curso vs. Setor vs. UFPR")
         st.write("Selecione uma pergunta para visualizar o comparativo detalhado conforme Figura 1 do documento.")
-        
+
         # Seletor de Pergunta
         perguntas_unicas = df['PERGUNTA'].unique()
         pergunta_sel = st.selectbox("Selecione a Questão:", perguntas_unicas)
-        
+
         # Filtra os dados apenas para essa pergunta nos 3 níveis
         q_curso = df_curso[df_curso['PERGUNTA'] == pergunta_sel]
         q_setor = df_setor[df_setor['PERGUNTA'] == pergunta_sel]
         q_ufpr = df_ufpr[df_ufpr['PERGUNTA'] == pergunta_sel]
-        
+
         # Calcula estatísticas
         # Nota: Precisamos tratar caso não haja respostas para evitar erros
         if not q_curso.empty:
             stats_curso = calcular_frequencias(q_curso).assign(Escopo=f"Curso ({curso_sel})")
             stats_setor = calcular_frequencias(q_setor).assign(Escopo=f"Setor ({setor_sel})")
             stats_ufpr = calcular_frequencias(q_ufpr).assign(Escopo="UFPR (Geral)")
-            
+
             # Junta tudo num único DF para plotagem
             df_comparativo = pd.concat([stats_curso, stats_setor, stats_ufpr])
-            
+
             # Gráfico de Barras Agrupadas (Grouped Bar Chart)
             # Recriando a lógica visual da 'Figura 1' [cite: 34-44]
             fig_comp = px.bar(
@@ -138,14 +159,14 @@ def avaliacao_institucional_view():
                 text_auto='.1f',
                 title=f"Questão: {pergunta_sel}"
             )
-            
+
             fig_comp.update_layout(yaxis_title="% Frequência Relativa")
             st.plotly_chart(fig_comp, use_container_width=True)
-            
+
             # Exibir Tabela de Dados (Opcional, mas útil para ver frequências absolutas)
             with st.expander("Ver dados brutos (Frequências Absolutas)"):
                 st.dataframe(df_comparativo[['Escopo', 'RESPOSTA', 'Contagem', 'Percentual']])
-                
+
         else:
             st.warning("Não há dados suficientes para esta pergunta no filtro selecionado.")
 
@@ -248,7 +269,7 @@ def avaliacao_institucional_view():
         ))
 
         fig_div.update_layout(
-            barmode='relative', 
+            barmode='relative',
             title=f"Saldo de Opinião: {dim_sel}",
             xaxis_title="% Rejeição <---> % Aprovação",
             yaxis=dict(autorange="reversed"), # Perguntas ordenadas de cima para baixo
@@ -277,8 +298,8 @@ def avaliacao_institucional_view():
             st.write("Perguntas onde os alunos mais responderam **'Desconheço'**:")
         with col_b:
             fig_desc = px.bar(
-                x=taxa_desc.values, 
-                y=taxa_desc.index, 
+                x=taxa_desc.values,
+                y=taxa_desc.index,
                 orientation='h',
                 color=taxa_desc.values,
                 color_continuous_scale='Blues',
@@ -286,7 +307,6 @@ def avaliacao_institucional_view():
             )
             fig_desc.update_layout(showlegend=False)
             st.plotly_chart(fig_desc, use_container_width=True)
-
 
     with tab4:
         st.markdown("## Inteligência Estratégica")
@@ -312,13 +332,13 @@ def avaliacao_institucional_view():
         # Calculamos % de 'Concordo' por Curso e Macro-Categoria
         df_approval = df_scatter[df_scatter['RESPOSTA'] == 'Concordo'].groupby(['CURSO', 'SETOR', 'Macro_Categoria']).size()
         df_total = df_scatter.groupby(['CURSO', 'SETOR', 'Macro_Categoria']).size()
-        
+
         # Dataframe de percentuais
         df_metrics = (df_approval / df_total * 100).fillna(0).reset_index(name='Aprovacao')
-        
+
         # Pivotar para ter colunas separadas: Infra e Pedagogico
         df_pivot = df_metrics.pivot_table(index=['CURSO', 'SETOR'], columns='Macro_Categoria', values='Aprovacao').reset_index()
-        
+
         # Garantir que as colunas existam (caso falte dados em algum eixo)
         if 'Infra' not in df_pivot.columns: df_pivot['Infra'] = 0
         if 'Pedagogico' not in df_pivot.columns: df_pivot['Pedagogico'] = 0
@@ -337,11 +357,11 @@ def avaliacao_institucional_view():
             title="Dispersão dos Cursos da UFPR (Infraestrutura x Pedagógico)",
             labels={"Infra": "Aprovação Infra/Gestão (%)", "Pedagogico": "Aprovação Pedagógica (%)"}
         )
-        
+
         # Linhas de Quadrantes (Médias)
         mean_infra = df_pivot['Infra'].mean()
         mean_ped = df_pivot['Pedagogico'].mean()
-        
+
         fig_scatter.add_vline(x=mean_infra, line_dash="dash", line_color="gray", annotation_text="Média Infra")
         fig_scatter.add_hline(y=mean_ped, line_dash="dash", line_color="gray", annotation_text="Média Pedag.")
 
@@ -350,13 +370,13 @@ def avaliacao_institucional_view():
 
         st.markdown("---")
         col_left, col_right = st.columns(2)
-        
+
         with col_left:
             st.markdown("### 2. Índice de Desigualdade Interna")
             st.caption("Mede a variação (Desvio Padrão) das notas entre os cursos de um mesmo setor.")
-            
+
             # Calcular a nota geral média de cada curso (Média de todas as dimensões)
-            df_curso_geral = df[df['RESPOSTA'] == 'Concordo'].groupby(['SETOR', 'CURSO']).size() 
+            df_curso_geral = df[df['RESPOSTA'] == 'Concordo'].groupby(['SETOR', 'CURSO']).size()
             total_curso_geral = df.groupby(['SETOR', 'CURSO']).size()
             score_geral = (df_curso_geral / total_curso_geral * 100).fillna(0).reset_index(name='Nota_Geral')
 
@@ -393,11 +413,11 @@ def avaliacao_institucional_view():
 
             # Filtrar dados para os dois cursos
             df_h2h = df[(df['CURSO'].isin([curso_a, curso_b])) & (df['RESPOSTA'] == 'Concordo')]
-            
+
             # Calcular % por Dimensão
             h2h_grouped = df_h2h.groupby(['CURSO', 'DIMENSAO']).size()
             h2h_total = df[df['CURSO'].isin([curso_a, curso_b])].groupby(['CURSO', 'DIMENSAO']).size()
-            
+
             df_compare = (h2h_grouped / h2h_total * 100).fillna(0).reset_index(name='Aprovacao')
 
             # Plotar

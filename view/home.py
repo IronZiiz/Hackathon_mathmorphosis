@@ -1,5 +1,28 @@
-import streamlit as st
+import streamlit as st\
 
+CARD_STYLE_BOXES  = """
+    border:1px solid #ddd; 
+    border-radius:12px; 
+    padding:20px; 
+    text-align:center;
+    background-color:#fafafa;
+    height:300px;               
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start; 
+    """
+CARD_STYLE_CARDS = """
+    border:1px solid #ddd;
+    border-radius:12px;
+    padding:20px;
+    text-align:left;
+    background-color:#fafafa;
+    height:180px;               
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    gap:20px;
+"""
 def home_view():
 
     st.markdown(
@@ -32,60 +55,6 @@ def home_view():
     st.write("")  
 
 
-    CARD_STYLE = """
-    border:1px solid #ddd; 
-    border-radius:12px; 
-    padding:16px; 
-    text-align:center;
-    background-color:#fafafa;
-    height:260px;               
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-start; 
-"""
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.markdown(
-            f"""
-            <div style="{CARD_STYLE}">
-                <div style="font-size:2rem;">📊</div>
-                <h3 style="margin-top:10px;">Visualização Intuitiva</h3>
-                <p>Gráficos e tabelas interativas para análise de frequências absolutas e relativas.</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    with col2:
-        st.markdown(
-            f"""
-            <div style="{CARD_STYLE}">
-                <div style="font-size:2rem;">📚</div>
-                <h3 style="margin-top:10px;">10 Dimensões Avaliativas</h3>
-                <p>Análise completa seguindo os 5 eixos do SINAES com todas as dimensões de avaliação.</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    with col3:
-        st.markdown(
-            f"""
-            <div style="{CARD_STYLE}">
-                <div style="font-size:2rem;">🌎</div>
-                <h3 style="margin-top:10px;">Acesso Público</h3>
-                <p>Dados impessoais disponíveis para toda a comunidade acadêmica e sociedade.</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    
-    st.write("")  
-    st.write("")  
-
-
     st.markdown(
         """
         <h1 style="text-align:center; font-size:2.4rem; font-weight:700;">
@@ -114,7 +83,7 @@ def home_view():
     with col1:
         st.markdown(
             f"""
-            <div style="{CARD_STYLE}">
+            <div style="{CARD_STYLE_BOXES}">
                 <div style="font-size:2rem;">✅</div>
                 <h3 style="margin-top:10px;">Concordo</h3>
                 <p>Indica que o respondente concorda com a afirmação apresentada</p>
@@ -126,7 +95,7 @@ def home_view():
     with col2:
         st.markdown(
             f"""
-            <div style="{CARD_STYLE}">
+            <div style="{CARD_STYLE_BOXES}">
                 <div style="font-size:2rem;">❌</div>
                 <h3 style="margin-top:10px;">Discordo</h3>
                 <p>Indica que o respondente discorda da afirmação apresentada</p>
@@ -138,10 +107,99 @@ def home_view():
     with col3:
         st.markdown(
             f"""
-            <div style="{CARD_STYLE}">
+            <div style="{CARD_STYLE_BOXES}">
                 <div style="font-size:2rem;">🔵</div>
-                <h3 style="margin-top:10px;"></h3>
+                <h3 style="margin-top:10px;">Desconheço</h3>
                 <p>Indica que o respondente não tem conhecimento sobre o tema</p>
             </div>
             """,
             unsafe_allow_html=True,)
+        
+    st.write("")  
+    st.write("")  
+    
+    st.markdown(
+        """
+        <h2 style="text-align:center; font-size:2.4rem; font-weight:700;">
+            Métricas Dísponíveis
+        </h2>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        """
+        <p style="
+            text-align:center;
+            max-width:750px;
+            margin:auto;
+            font-size:1.1rem;
+            color:#555;
+        ">
+            As métricas são compostas de valores que trazem um panorama geral e também específicas de cada pesquisa e pergunta.
+        </p>
+        """,
+        unsafe_allow_html=True)
+    
+    
+    col1, col2 = st.columns(2)
+
+
+    with col1: 
+        st.markdown(
+            f"""
+            <div style="{CARD_STYLE_CARDS}">
+                <div style="font-size:2rem;">📶</div>
+                <p>
+                    <span style="font-weight:700;">Frequência Absoluta e Relativa: </span>
+                    Contagem total de respostas e percentuais por alternativa para cada questão.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        st.write("")  
+        st.markdown(
+            f"""
+            <div style="{CARD_STYLE_CARDS}">
+                <div style="font-size:2rem;">🎓</div>
+                <p>
+                    <span style="font-weight:700;">Comparativo por Nível: </span>
+                    Comparação entre Curso, Setor e UFPR como um todo.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    with col2: 
+        st.markdown(
+            f"""
+            <div style="{CARD_STYLE_CARDS}">
+                <div style="font-size:2rem;">🏛️</div>
+                <p>
+                    <span style="font-weight:700;">Análise por Dimensão: </span>
+                    Resultados agrupados por dimensão e eixo avaliativo do SINAES.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        st.write("")  
+        st.markdown(
+            f"""
+            <div style="{CARD_STYLE_CARDS}">
+                <div style="font-size:2rem;">📊</div>
+                <p>
+                    <span style="font-weight:700;">Índices Gerais: </span>
+                    Concordância, discordância e desconhecimento consolidados.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+    

@@ -78,7 +78,7 @@ def home_view():
     st.markdown(
                 """
                 <h1 style="text-align:center; font-size:2.4rem; font-weight:700;">
-                    Como isso funciona?
+                    Como funciona?
                 </h1>
                 """,
                 unsafe_allow_html=True

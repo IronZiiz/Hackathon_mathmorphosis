@@ -1,4 +1,5 @@
-import streamlit as st\
+import streamlit as st
+from streamlit_carousel import carousel
 
 CARD_STYLE_BOXES  = """
     border:1px solid #ddd; 
@@ -50,6 +51,27 @@ def home_view():
         """,
         unsafe_allow_html=True
     )
+    st.write("")  
+    st.write("")  
+    carousel([
+    {
+        "img": "https://picsum.photos/800/600?random=1",
+        "title": "",
+        "text": ""
+    },
+    {
+        "img": "https://picsum.photos/800/600?random=2",
+        "title": "",
+        "text": ""
+    },
+    {
+        "img": "https://picsum.photos/800/600?random=3",
+        "title": "",
+        "text": ""
+    },
+    ])
+
+
 
     st.write("")  
     st.write("")  

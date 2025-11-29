@@ -60,7 +60,7 @@ def avaliacao_institucional_view():
             columns=['EIXO', 'DIMENSAO', 'PERGUNTA', 'RESPOSTA']
         )
 
-    df = load_data_detalhado()
+    df = AvaliacaoInstitucionalService().df_load_dados_institucional
     st.set_page_config(
         page_title="Resultados Avaliação Institucional - UFPR",
         layout="wide"
@@ -124,7 +124,12 @@ def avaliacao_institucional_view():
         )
         
     with col2:
-        opcoes_perguntas = ["Todos"]
+        # Filter all the questions in the selected axis
+        if "Todos" in eixo_value or not eixo_value:
+            opcoes_perguntas = ["Todos"] + sorted(df['PERGUNTA'].unique().tolist())
+        else:
+            opcoes_perguntas = ["Todos"] + sorted(df[df['EIXO'].isin(eixo_value)]['PERGUNTA'].unique().tolist())
+        
         perguntas_value = st.multiselect(
             "Perguntas",
             opcoes_perguntas,
@@ -186,18 +191,19 @@ def avaliacao_institucional_view():
     with col_graf2:
         st.subheader("Comparativo por Eixo")
         
-        if "Todos" in eixo_value:
-            df_comp = df
+        # Filter all the questions in the selected axis
+        if "Todos" in eixo_value or not eixo_value:
+            opcoes_perguntas = ["Todos"] + sorted(df['PERGUNTA'].unique().tolist())
         else:
-            df_comp = df_filtered
+            opcoes_perguntas = ["Todos"] + sorted(df[df['EIXO'].isin(eixo_value)]['PERGUNTA'].unique().tolist())
             
         df_grouped = (
-            df_comp.groupby(['EIXO', 'RESPOSTA'])
+            df_filtered.groupby(['EIXO', 'RESPOSTA'])
             .size()
             .reset_index(name='COUNT')
         )
         total_por_eixo = (
-            df_comp.groupby('EIXO')
+            df_filtered.groupby('EIXO')
             .size()
             .reset_index(name='TOTAL')
         )
@@ -293,8 +299,8 @@ def avaliacao_institucional_view():
 
     st.plotly_chart(fig_div, use_container_width=True)
 
-    with st.expander("Ver dados brutos (Frequências Absolutas)"):
-        st.dataframe()
+    with st.expander("Ver dados brutos (Frequências Absolutas) (TEMPORÁRIO)"):
+        st.dataframe(df) # Temp
         message = "Lorem ipsum.\nStreamlit is cool."
         st.download_button(
             label="Download Dados brutos",

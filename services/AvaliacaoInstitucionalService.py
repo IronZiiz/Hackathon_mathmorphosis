@@ -28,8 +28,17 @@ class AvaliacaoInstitucionalService(DataLoader):
         return pct_comparacao_ano_atual,qtd_respondentes_ano_passado
     
     # satisfação = concordancia pois frases afirmativas
+    def total_respostas_ano_atual(self): 
+        df = self.df_load_dados_institucional[['RESPOSTA']]
+        total_respostas = len(df)
+        return total_respostas
+
     def satisfacao_ano_atual(self):
-        pct_satisfacao_ano_atual = 10
+        df = self.df_load_dados_institucional[['RESPOSTA']]
+        total_respostas = self.total_respostas_ano_atual() 
+        
+        pct_satisfacao_ano_atual = (df['RESPOSTA'].eq('Concordo').sum() / total_respostas) * 100
+
         return pct_satisfacao_ano_atual
     
     def satisfacao_ano_passado(self):
@@ -37,7 +46,9 @@ class AvaliacaoInstitucionalService(DataLoader):
             return pct_satisfacao_ano_passado
     
     def insatisfacao_ano_atual(self):
-        pct_insatisfacao_ano_atual = 10
+        df = self.df_load_dados_institucional[['RESPOSTA']]
+        total_respostas = self.total_respostas_ano_atual() 
+        pct_insatisfacao_ano_atual = (df['RESPOSTA'].eq('Discordo').sum() / total_respostas) * 100
         return pct_insatisfacao_ano_atual
     
     def insatisfacao_ano_passado(self):
@@ -45,11 +56,13 @@ class AvaliacaoInstitucionalService(DataLoader):
         return pct_insatisfacao_ano_passado 
     
     def desconhecimento_ano_atual(self): 
-        pct_desconhecimento_ano_atual =10
+        df = self.df_load_dados_institucional[['RESPOSTA']]
+        total_respostas = self.total_respostas_ano_atual() 
+        pct_desconhecimento_ano_atual = (df['RESPOSTA'].eq('Desconheço').sum() / total_respostas) * 100
         return pct_desconhecimento_ano_atual
     
-    def desconhecimento_ano_passadol(self): 
-        pct_desconhecimento_ano_passado=10
+    def desconhecimento_ano_passado(self): 
+        pct_desconhecimento_ano_passado = 10 
         return pct_desconhecimento_ano_passado 
 
     def grafico_dist_total_rosquinha(self): 

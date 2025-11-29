@@ -84,14 +84,14 @@ def avaliacao_institucional_view():
             label="Total Respondentes",
             border=BORDER,
             value=qtd_respondentes_ano_atual,
-            delta=f"{pct_comparacao}% Ano passado: {qtd_respondentes_ano_passado}"
+            delta=f"{pct_comparacao:.1f}% Ano passado: {qtd_respondentes_ano_passado}"
         )
         
     with col2:
         st.metric(
             label="Concordância",
             border=BORDER,
-            value="10%",
+            value=f"{service.satisfacao_ano_atual():.2f}%",
             delta=1,
             delta_color="normal"
         )
@@ -100,7 +100,7 @@ def avaliacao_institucional_view():
         st.metric(
             label="Discordância",
             border=BORDER,
-            value="10%",
+            value=f"{service.insatisfacao_ano_atual():.2f}%",
             delta=2,
             delta_color="inverse"
         )
@@ -109,7 +109,7 @@ def avaliacao_institucional_view():
         st.metric(
             label="Desconhecimento",
             border=BORDER,
-            value="10%",
+            value=f"{service.desconhecimento_ano_atual():.2f}%",
             delta=1
         )
         

@@ -64,21 +64,26 @@ def avaliacao_institucional_view():
     with col1:
         st.metric(label="Total Respondentes",
                           border=BORDER,
-                          value= 0)
+                          value= 0,
+                          delta= f"30% Ano passado: 200 ", 
+                          )
         
     with col2: 
         st.metric(label="Concordância",
                           border=BORDER,
-                          value= 0)
+                          value= 0,
+                          delta= f"30% Ano passado: 200 ")
     with col3:
         st.metric(label="Discordância",
                           border=BORDER,
-                          value= 0)
+                          value= 0,
+                          delta= f"30% Ano passado: 200 ")
         
     with col4: 
         st.metric(label="Desconhecimento",
                           border=BORDER,
-                          value= 0)
+                          value= 0,
+                          delta= f"30% Ano passado: 200 ")
         
     col1, col2 = st.columns(2)
     with col1: 
@@ -219,6 +224,6 @@ def avaliacao_institucional_view():
                             icon=":material/download:",
         )
     
-  
+    
         
     

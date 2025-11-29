@@ -11,7 +11,7 @@ import numpy as np
 from services.AvaliacaoInstitucionalService import AvaliacaoInstitucionalService
 
 # Constante de estilo
-BORDER = 1
+BORDER = True
 color_map = {'Concordo': '#2ecc71', 'Discordo': '#e74c3c', 'Desconheço': '#95a5a6'}
 
 @st.cache_data
@@ -55,8 +55,10 @@ def avaliacao_institucional_view():
     service_avaliacao_institucional = AvaliacaoInstitucionalService(  
                 eixos_value = None,
                  perguntas_value = None)
+    
     qtd_respondentes_ano_atual =service_avaliacao_institucional.total_respondentes_ano_atual()
     pct_comparacao_ano_atual,qtd_respondentes_ano_passado =  service_avaliacao_institucional.total_respondentes_ano_passado()
+
     with col1:
         st.metric(label="Total Respondentes",
                   border=BORDER,

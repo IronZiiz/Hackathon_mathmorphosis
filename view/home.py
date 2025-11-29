@@ -364,4 +364,4 @@ def home_view():
         time.sleep(1)
         msg.empty()
     else:
-        st.error("Você precisa deixar um feedback!")
+        st.error("Deixe seu feedback!")

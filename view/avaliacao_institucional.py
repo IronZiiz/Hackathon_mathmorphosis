@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
+from services.AvaliacaoInstitucionalService import AvaliacaoInstitucionalService
 
 BORDER = 1
 def avaliacao_institucional_view():
@@ -72,35 +73,43 @@ def avaliacao_institucional_view():
         st.metric(label="Concordância",
                           border=BORDER,
                           value= 0,
-                          delta= f"30% Ano passado: 200 ")
+                          delta= f"Ano passado: 200 ")
     with col3:
         st.metric(label="Discordância",
                           border=BORDER,
                           value= 0,
-                          delta= f"30% Ano passado: 200 ")
+                          delta= f"Ano passado: 200 ")
         
     with col4: 
         st.metric(label="Desconhecimento",
                           border=BORDER,
                           value= 0,
-                          delta= f"30% Ano passado: 200 ")
+                          delta= f"Ano passado: 200 ")
         
     col1, col2 = st.columns(2)
     with col1: 
-        eixo_filter = st.multiselect(
+        eixo_value = st.multiselect(
         "Eixo",
         ["Todos","Planejamento e Avaliação", "Desenvolvimento Instucional", "Polítias Acadêmicas", "Políticas De Gestão", "Infraestrutura Física"],
         default=["Todos"],
-        key= "aaa"
+        key= "eixo_value"
     )
 
     with col2:
-        perguntas_filter = st.multiselect(
+        perguntas_value = st.multiselect(
         "Selecione as perguntas",
         ["Todas"],
         default=["Todas"],
-        key = "aaaa"
+        key = "perguntas_value"
     )
+    
+    service_avaliacao_institucional = AvaliacaoInstitucionalService(
+         eixos_value= eixo_value,
+         perguntas_value= perguntas_value)
+         
+    
+         
+
 
     
     
@@ -170,7 +179,6 @@ def avaliacao_institucional_view():
             showlegend=True,
             title="Comparação concordância média dos eixos com eixos filtrado  "
         )
-        # st.plotly_chart(fig_radar, use_container_width=True, key = 2)
     
            
         dimensoes = df['DIMENSAO'].unique()

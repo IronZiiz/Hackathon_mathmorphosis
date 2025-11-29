@@ -52,7 +52,8 @@ def avaliacao_institucional_view():
   
   
     col1, col2, col3, col4 = st.columns(4)
-    service_avaliacao_institucional = AvaliacaoInstitucionalService(  eixos_value = None,
+    service_avaliacao_institucional = AvaliacaoInstitucionalService(  
+                eixos_value = None,
                  perguntas_value = None)
     qtd_respondentes_ano_atual =service_avaliacao_institucional.total_respondentes_ano_atual()
     pct_comparacao_ano_atual,qtd_respondentes_ano_passado =  service_avaliacao_institucional.total_respondentes_ano_passado()
@@ -74,7 +75,6 @@ def avaliacao_institucional_view():
                   value=f"10%",
                   delta = 2,
                   delta_color="inverse") # Vermelho se aumentar
-        
     with col4: 
         st.metric(label="Desconhecimento",
                   border=BORDER,

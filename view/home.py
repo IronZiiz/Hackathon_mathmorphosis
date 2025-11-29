@@ -52,14 +52,6 @@ def home_view():
         """,
         unsafe_allow_html=True
     )
-    feedback_value = st.feedback()
-    if feedback_value is not None:
-        msg = st.empty()
-        msg.success("Obrigado pelo feedback!")
-        time.sleep(1)
-        msg.empty()
-    else:
-        st.error("Você precisa deixar um feedback!")
 
     st.write("")  
     st.write("")  
@@ -365,4 +357,11 @@ def home_view():
         """,
         unsafe_allow_html=True
 )
-    
+    feedback_value = st.feedback()
+    if feedback_value is not None:
+        msg = st.empty()
+        msg.success("Obrigado pelo feedback!")
+        time.sleep(1)
+        msg.empty()
+    else:
+        st.error("Você precisa deixar um feedback!")

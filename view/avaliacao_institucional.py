@@ -74,6 +74,7 @@ def avaliacao_institucional_view():
         eixos_value=None,
         perguntas_value=None
     )
+
     qtd_respondentes_ano_atual = service.total_respondentes_ano_atual()
     pct_comparacao, qtd_respondentes_ano_passado = (
         service.total_respondentes_ano_passado()
@@ -114,7 +115,6 @@ def avaliacao_institucional_view():
         )
         
     col1, col2 = st.columns(2)
-    
     with col1:
         opcoes_eixo = ["Todos"] + list(df['EIXO'].unique())
         eixo_value = st.multiselect(
@@ -146,7 +146,9 @@ def avaliacao_institucional_view():
         perguntas_value=perguntas_value
     )
 
-    st.markdown("---")    
+    st.markdown("---")
+    st.subheader('Distribuição de respostas filtradas por Eixo')
+
 
     total_resp = len(df_filtered)
     if total_resp > 0:
@@ -160,75 +162,31 @@ def avaliacao_institucional_view():
     col_graf1, col_graf2 = st.columns(2)
     
     with col_graf1:
-        st.subheader("Distribuição Total (Seleção)")
-        
+        total_resp, fig_donut_dist_total = service.grafico_distribuicao_total_donut()
         if total_resp > 0:
-            df_pizza = df_filtered['RESPOSTA'].value_counts().reset_index()
-            df_pizza.columns = ['RESPOSTA', 'CONTAGEM']
-            
-            fig_donut = px.pie(
-                df_pizza,
-                values='CONTAGEM',
-                names='RESPOSTA',
-                hole=0.5,
-                color='RESPOSTA',
-                color_discrete_map=COLOR_MAP
-            )
-            fig_donut.update_traces(
-                textposition='inside',
-                textinfo='percent+label'
-            )
-            fig_donut.update_layout(
-                showlegend=False,
-                margin=dict(t=0, b=0, l=0, r=0)
-            )
-            
-            st.plotly_chart(fig_donut, use_container_width=True)
-            st.caption(f"Total de respostas consideradas por pergunta: {total_resp}")
+            st.plotly_chart(fig_donut_dist_total, use_container_width=True)
+            st.caption(f"Total de respostas consideradas por pergunta:{total_resp}")
         else:
             st.warning("Sem dados para os filtros selecionados.")
 
     with col_graf2:
-        st.subheader("Comparativo por Eixo")
-        st.write("")
-        st.write("")
-    
-        
-        df_grouped = (
-            df_filtered.groupby(['EIXO', 'RESPOSTA'])
-            .size()
-            .reset_index(name='COUNT')
-        )
-        total_por_eixo = (
-            df_filtered.groupby('EIXO')
-            .size()
-            .reset_index(name='TOTAL')
-        )
-        df_merged = pd.merge(df_grouped, total_por_eixo, on='EIXO')
-        df_merged['PERCENT'] = (df_merged['COUNT'] / df_merged['TOTAL']) * 100
-        df_merged = df_merged.sort_values('EIXO')
 
-        fig_bar = px.bar(
-            df_merged,
-            x="EIXO",
-            y="PERCENT",
-            color="RESPOSTA",
-            color_discrete_map=COLOR_MAP,
-            barmode='stack',
-            text_auto='.0f',
-            height=400
-        )
+        st.plotly_chart(service.grafico_resumo_por_eixo(), use_container_width=True)
         
-        fig_bar.update_layout(
-            xaxis_title="",
-            yaxis_title="% das Respostas",
-            legend_title="",
-            xaxis={'tickangle': 0}
-        )
-        fig_bar.update_yaxes(range=[0, 100])
         
-        st.plotly_chart(fig_bar, use_container_width=True)
+       
 
+
+    st.markdown("---")
+    st.subheader('Participação das Unidades gestoras nas Pesquisas')
+    col1, col2 = st.columns(2)
+    with col1: 
+        st.plotly_chart(service.grafico_barra_unidade_gestora(), use_container_width=True)
+
+    with col2:
+        st.plotly_chart(service.grafico_donut_top10(),use_container_width=True)
+
+        
     dimensoes = df_filtered['DIMENSAO'].unique()
     
     dim_sel = st.selectbox(

@@ -121,7 +121,6 @@ def avaliacao_das_disciplinas_view():
         fig_bar.update_yaxes(range=[0, 100])
         st.plotly_chart(fig_bar, use_container_width=True)
 
-        
     dimensoes = ["Dimensão 1", "Dimensão 2"]
     dim_sel = st.selectbox(
         "Selecione a Dimensão para Análise Detalhada:",

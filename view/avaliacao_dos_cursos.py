@@ -3,7 +3,8 @@ import plotly.express as px
 import pandas as pd
 import plotly.graph_objects as go
 
-from services.AvalicaoDosCursosService import *
+from services.AvalicaoDosCursosService import AvaliacaoDosCursosService
+
 BORDER = 1
 COLOR_MAP = {
     'Concordo': '#2ecc71',
@@ -29,7 +30,7 @@ def avaliacao_dos_cursos_view():
         st.metric(
             label="Total Respondentes",
             border=BORDER,
-            value=f"{service.get_total_respondentes(path='data/processed/Cursos2025/Cursos2025_limpo.csv')}",
+            value=f"{service.get_total_respondentes()}",
             delta=f"% Ano passado: "
         )
         
@@ -37,7 +38,7 @@ def avaliacao_dos_cursos_view():
         st.metric(
             label="Concordância",
             border=BORDER,
-            value=f"{service.get_concordancia(path='data/processed/Cursos2025/Cursos2025_limpo.csv'):.2f}%",
+            value=f"{service.get_concordancia():.2f}%",
             delta=1
         )
         
@@ -45,7 +46,7 @@ def avaliacao_dos_cursos_view():
         st.metric(
             label="Discordância",
             border=BORDER,
-            value=f"{service.get_discordancia(path='data/processed/Cursos2025/Cursos2025_limpo.csv'):.2f}%",
+            value=f"{service.get_discordancia():.2f}%",
             delta=2
         )
         
@@ -53,7 +54,7 @@ def avaliacao_dos_cursos_view():
         st.metric(
             label="Desconhecimento",
             border=BORDER,
-            value=f"{service.get_desconhecimento(path='data/processed/Cursos2025/Cursos2025_limpo.csv'):.2f}%",
+            value=f"{service.get_desconhecimento():.2f}%",
             delta=1
         )    
     curso_value = st.selectbox("Pesquise a curso de seu interesse",

@@ -55,24 +55,42 @@ def home_view():
 
     st.write("")  
     st.write("")  
-    
+    st.markdown("""
+    <style>
+    .carousel-item img {
+        object-fit: contain !important;
+        width: 100% !important;
+        height: auto !important;
+        max-height: 90vh !important;
+        background-color: black; 
+    }
+    </style>
+    """, unsafe_allow_html=True)
     carousel([
     {
-        "img": "https://picsum.photos/800/600?random=1",
+        "img": "data/imgs/1.png",
         "title": "",
         "text": ""
     },
     {
-        "img": "https://picsum.photos/800/600?random=2",
+        "img": "data/imgs/2.png",
+        "title": "",
+        "text": ""
+    },
+   
+    {
+        "img": "data/imgs/4.png",
         "title": "",
         "text": ""
     },
     {
-        "img": "https://picsum.photos/800/600?random=3",
+        "img": "data/imgs/5.png",
         "title": "",
         "text": ""
-    },
-    ])
+    }
+
+    ]
+    )
 
 
     st.write("")  
@@ -324,19 +342,6 @@ def home_view():
     """,
     unsafe_allow_html=True 
     )
-    st.markdown(
-        """
-        <p style="
-            text-align:left;
-            max-width:750px;
-            margin:auto;
-            font-size:0.75rem;
-            color:#555;
-            opacity:0.7;
-            line-height:1;
-        ">
-            <span style="font-weight:700; opacity:1;">Fundamento Legal</span>""",unsafe_allow_html =True)
-
     st.write("")
     st.write("")
 

@@ -194,20 +194,7 @@ class AvaliacaoInstitucionalService(DataLoader):
 
         return fig_bar
 
-    
-    def grafico_dist_por_eixo_barra(self): 
-        fig = 'grafico'
-        dataframe_fig = 'Data frame usado para construir a fig'
-        return fig, dataframe_fig
-    
-    def grafico_perguntas(self): 
-        fig = 'grafico'
-        dataframe_fig = 'Data frame usado para construir a fig'
-        return fig, dataframe_fig
-    
-    def df_dados_brutos(self):
-        dados_brutos = 'Dados com valores de freq relativa e absoluta'
-        return dados_brutos
+
     
     def preparar_dados_unidade_gestora(self):
         df = self.df_load_dados_institucional[['ID_PESQUISA', 'UNIDADE GESTORA']]

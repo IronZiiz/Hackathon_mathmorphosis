@@ -113,7 +113,68 @@ class AvaliacaoDosCursosService(DataLoader):
 
         return total_resp, fig_donut
     
+    def grafico_resumo_por_eixo(self):
+        COLOR_MAP = {
+        'Concordo': '#2ecc71',
+        'Discordo': '#e74c3c',
+        'Desconheço': '#95a5a6'
+        }
+        df_filtered = self.df_curso_filtrado_selecionado()
+        if df_filtered.empty:
+            return None
+
+        df_grouped = (
+            df_filtered.groupby(['EIXO', 'RESPOSTA'])
+            .size()
+            .reset_index(name='COUNT')
+        )
+
+        total_por_eixo = (
+            df_filtered.groupby('EIXO')
+            .size()
+            .reset_index(name='TOTAL')
+        )
+
+        df_merged = pd.merge(df_grouped, total_por_eixo, on='EIXO')
+        df_merged['PERCENT'] = (df_merged['COUNT'] / df_merged['TOTAL']) * 100
+        df_merged = df_merged.sort_values('EIXO')
+
+        df_merged["LABEL"] = df_merged.apply(
+            lambda row: f"{row['PERCENT']:.1f}% ({row['COUNT']})", axis=1
+        )
+
+        fig_bar = px.bar(
+            df_merged,
+            x="EIXO",
+            y="PERCENT",
+            color="RESPOSTA",
+            color_discrete_map=COLOR_MAP,
+            barmode='stack',
+            text="LABEL",
+            height=500
+        )
+
+        fig_bar.update_traces(
+            textposition="inside",
+            insidetextanchor="middle"
+        )
+
+        fig_bar.update_layout(
+            title = 'Distribuição de respostas por eixos',
+            xaxis_title="Eixo",
+            yaxis_title="% das Respostas",
+            legend_title="",
+            margin=dict(l=10, r=10, t=45, b=0),
+            yaxis=dict(range=[0, 100]),
+            xaxis=dict(tickangle=10)
+        )
+
+        return fig_bar
+    
+    def grafico_radar_setor_curso(self): 
         
+        return fig
+
     
 
     

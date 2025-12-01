@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit_carousel import carousel
 import time 
-from services.HomeService import DataLogger, Authenticator
+from services.HomeService import DataLogger
 
 COLOR_UFPR_BLUE = '#00548e'
 COLOR_UFPR_BLACK ='#231F20'
@@ -30,10 +30,7 @@ CARD_STYLE_CARDS = """
     gap:20px;
 """
 
-###### Lógica do Autenticador ######
-VALID_USERNAME = "admin"
-VALID_PASSWORD = "123" 
-authenticator = Authenticator(VALID_USERNAME, VALID_PASSWORD)
+
 
 def home_view():
 
@@ -391,4 +388,3 @@ def home_view():
         msg.empty()
     else:
         st.error("Deixe seu feedback!")
-authenticator.secure_page(home_view)

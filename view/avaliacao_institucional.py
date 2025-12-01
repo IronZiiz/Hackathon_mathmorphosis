@@ -190,7 +190,7 @@ def avaliacao_institucional_view():
     st.markdown("---")
     st.subheader('Analise detalhada das perguntas')
 
-    lista_dimensoes = df_filtered['DIMENSAO'].unique()
+    lista_dimensoes = df_filtered['DIMENSAO_NUMERICA'].unique()
     dim_sel = st.selectbox(
         "Selecione a Dimensão para Análise Detalhada:",lista_dimensoes
     )

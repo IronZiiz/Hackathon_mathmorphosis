@@ -4,7 +4,7 @@ PATH_TO_DIR = "data/processed/"
 PATH_DADOS_INSTITUCIONAL = PATH_TO_DIR + "Institucional2025/processed_Institucional_2025.csv"
 PATH_DADOS_DISCIPLINAS_PRESENCIAL = PATH_TO_DIR + "Presencial2025/processed_presencial_2025.csv"
 PATH_DADOS_DISCIPLINAS_EAD = PATH_TO_DIR + "EAD2025/processed_ead_2025.csv"
-PATH_DADOS_CURSOS = PATH_TO_DIR + "Cursos2024/Cursos2024_limpo.csv"
+PATH_DADOS_CURSOS = PATH_TO_DIR + "Cursos2024/processed_cursos_2024.csv"
 
 class DataLoader:
     def __init__(self): 

@@ -301,7 +301,7 @@ class AvaliacaoInstitucionalService(DataLoader):
         df = self.df_load_dados_institucional.copy()
         dim_sel = self.dimensao_value
 
-        df_filtered = df[df["DIMENSAO"] == dim_sel]
+        df_filtered = df[df["DIMENSAO_NUMERICA"] == dim_sel]
 
         grouped = (
             df_filtered.groupby(['PERGUNTA', 'RESPOSTA'])
@@ -369,7 +369,7 @@ class AvaliacaoInstitucionalService(DataLoader):
 
         fig_div.update_layout(
             barmode='relative',
-            title=f"Saldo de Opinião por Questão: {dim_sel.split('-')[0]}",
+            title=f"Saldo de Opinião por Questão: {dim_sel}",
             xaxis_title="% Rejeição <---> % Aprovação",
             yaxis=dict(title=""),
             bargap=0.3,

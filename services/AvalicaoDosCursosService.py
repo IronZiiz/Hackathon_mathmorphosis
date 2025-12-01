@@ -1,14 +1,20 @@
 from services.DataLoader  import DataLoader
 import pandas as pd
- 
+import plotly.graph_objects as go
+import plotly.express as px
+
 class AvaliacaoDosCursosService(DataLoader): 
     def __init__(self,
-                df_load_dados_curso = None):
+                df_load_dados_curso = None,
+                curso_value = None,
+                setor_value = None, 
+                ):
         
         if df_load_dados_curso is None:
             df_load_dados_curso = DataLoader.load_dados_curso()
 
         self.df = df_load_dados_curso
+        self.curso_value = curso_value
 
     def get_total_respondentes(self) -> int:
         return self.df["ID_PESQUISA"].nunique() # Será que essa quantidade é de fato os respondentes?
@@ -47,7 +53,68 @@ class AvaliacaoDosCursosService(DataLoader):
         desconhecimento = len(df[df["RESPOSTA"] == "Desconheço"])
         return desconhecimento
     
-    def curso_selecionado(self, curso_value: str) -> pd.DataFrame:
+    def formatacao_curso_setor(self) -> list:
+        df = self.df[['CURSO','SETOR_CURSO']].drop_duplicates()
+
+        opcoes = [
+            f"Curso: {row.CURSO} - Setor: {row.SETOR_CURSO}"
+            for row in df.itertuples()
+        ]
+        return ["Todos os cursos"] + sorted(opcoes)
+
+    def df_curso_filtrado_selecionado(self) -> pd.DataFrame:
         df = self.df
-        df_curso = df[df["CURSO"] == curso_value]
+        curso_value = self.curso_value
+        if curso_value == 'Todos': 
+            df_curso = df
+        else:
+            df_curso = df[df["CURSO"] == curso_value]
+
         return df_curso
+    
+    def grafico_distribuicao_donut(self):
+        curso_value = self.curso_value
+        COLOR_MAP = {
+            'Concordo': '#2ecc71',
+            'Discordo': '#e74c3c',
+            'Desconheço': '#95a5a6'
+        }
+
+        df_filtered = self.df_curso_filtrado_selecionado()
+        total_resp = len(df_filtered)
+
+        if total_resp == 0:
+            return None
+
+        df_pizza = df_filtered["RESPOSTA"].value_counts().reset_index()
+        df_pizza.columns = ["RESPOSTA", "CONTAGEM"]
+
+        fig_donut = px.pie(
+            df_pizza,
+            values='CONTAGEM',
+            names='RESPOSTA',
+            hole=0.5,
+            color='RESPOSTA',
+            color_discrete_map=COLOR_MAP
+        )
+
+        fig_donut.update_traces(
+            textposition='inside',
+            textinfo='percent+label'
+            
+        )
+
+        fig_donut.update_layout(
+            title=f"Distribuição Geral de Respostas curso: {curso_value}",
+            showlegend=False,
+            margin=dict(t=40, b=0, l=0, r=0),
+            height=400
+        )
+
+        return total_resp, fig_donut
+    
+        
+    
+
+    
+    

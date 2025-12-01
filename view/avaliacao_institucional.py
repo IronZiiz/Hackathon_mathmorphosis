@@ -116,19 +116,28 @@ def avaliacao_institucional_view():
         
     col1, col2 = st.columns(2)
     with col1:
-        opcoes_eixo = ["Todos"] + list(df['EIXO'].unique())
+        opcoes_eixo = service.formatar_eixos()
         eixo_value = st.multiselect(
             "Eixo",
             opcoes_eixo,
             default=["Todos"],
             key="filtro_eixo"
         )
-
     if "Todos" in eixo_value or not eixo_value:
         df_filtered = df.copy()
     else:
-        df_filtered = df[df['EIXO'].isin(eixo_value)].sort_values(by='Ordem')
+        mapeamento = {
+            "DESENVOLVIMENTO_INSTITUCIONAL": "Desenvolvimento Institucional",
+            "POLITICAS_DE_GESTAO": "Políticas de Gestão",
+            "COMPLEXO_DO_HOSPITAL_DE_CLINICAS": "Complexo do Hospital de Clínicas"
+        }
+        reverse_map = {v: k for k, v in mapeamento.items()}
 
+        eixos_selecionados = [
+            reverse_map.get(e, e.replace(" ", "_").upper()) for e in eixo_value
+        ]
+        eixo_value = eixos_selecionados
+        df_filtered = df[df['EIXO'].isin(eixos_selecionados)].sort_values(by='Ordem')
     with col2:
         # Filter all the questions in the selected axis
         perguntas_unicas = (df_filtered['Ordem'].astype(int).astype(str) + ' - ' + df_filtered['PERGUNTA']).unique().tolist()

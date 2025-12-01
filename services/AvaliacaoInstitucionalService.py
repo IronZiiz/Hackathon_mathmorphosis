@@ -20,7 +20,21 @@ class AvaliacaoInstitucionalService(DataLoader):
         self.eixos_value = eixos_value
         self.perguntas_value = perguntas_value
         self.dimensao_value = dimensao_value
+    
+    def formatar_eixos(self) -> list:
+        df = self.df_load_dados_institucional
+        list_eixos = list(df['EIXO'].unique())
 
+        mapeamento = {
+            "DESENVOLVIMENTO_INSTITUCIONAL": "Desenvolvimento Institucional",
+            "POLITICAS_DE_GESTAO": "Políticas de Gestão",
+            "COMPLEXO_DO_HOSPITAL_DE_CLINICAS": "Complexo do Hospital de Clínicas"
+        }
+
+        list_eixos_formatada = [mapeamento.get(eixo, eixo.replace("_", " ").title()) for eixo in list_eixos]
+
+        return ['Todos'] + list_eixos_formatada
+    
     def filtrar_dados_institucionais(self):
         df = self.df_load_dados_institucional.copy()
 
@@ -145,22 +159,31 @@ class AvaliacaoInstitucionalService(DataLoader):
         df_filtered = self.filtrar_dados_institucionais()
         if df_filtered.empty:
             return None
+        mapeamento = {
+        "DESENVOLVIMENTO_INSTITUCIONAL": "Desenvolvimento Institucional",
+        "POLITICAS_DE_GESTAO": "Políticas de Gestão",
+            "COMPLEXO_DO_HOSPITAL_DE_CLINICAS": "Complexo do Hospital de Clínicas"
+        }
+        df_filtered['EIXO_FORMATADO'] = df_filtered['EIXO'].map(mapeamento).fillna(
+            df_filtered['EIXO'].str.replace("_", " ").str.title()
+        )
+
 
         df_grouped = (
-            df_filtered.groupby(['EIXO', 'RESPOSTA'])
+            df_filtered.groupby(['EIXO_FORMATADO', 'RESPOSTA'])
             .size()
             .reset_index(name='COUNT')
         )
 
         total_por_eixo = (
-            df_filtered.groupby('EIXO')
+            df_filtered.groupby('EIXO_FORMATADO')
             .size()
             .reset_index(name='TOTAL')
         )
 
-        df_merged = pd.merge(df_grouped, total_por_eixo, on='EIXO')
+        df_merged = pd.merge(df_grouped, total_por_eixo, on='EIXO_FORMATADO')
         df_merged['PERCENT'] = (df_merged['COUNT'] / df_merged['TOTAL']) * 100
-        df_merged = df_merged.sort_values('EIXO')
+        df_merged = df_merged.sort_values('EIXO_FORMATADO')
 
         df_merged["LABEL"] = df_merged.apply(
             lambda row: f"{row['PERCENT']:.1f}% ({row['COUNT']})", axis=1
@@ -168,7 +191,7 @@ class AvaliacaoInstitucionalService(DataLoader):
 
         fig_bar = px.bar(
             df_merged,
-            x="EIXO",
+            x='EIXO_FORMATADO',
             y="PERCENT",
             color="RESPOSTA",
             color_discrete_map=COLOR_MAP,

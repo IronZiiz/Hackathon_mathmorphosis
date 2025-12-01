@@ -92,7 +92,7 @@ class AvaliacaoInstitucionalService(DataLoader):
     def insatisfacao_ano_atual(self):
         df = self.df_load_dados_institucional[['RESPOSTA']]
         total_respostas = self.total_respostas_ano_atual() 
-        pct_insatisfacao_ano_atual = (df['RESPOSTA'].eq('Discordo').sum() / total_respostas) * 100
+        pct_insatisfacao_ano_atual = (df['RESPOSTA'].eq('Discordo').sum() / total_respostas ) * 100
         return pct_insatisfacao_ano_atual
     
     def insatisfacao_ano_passado(self):
@@ -102,7 +102,7 @@ class AvaliacaoInstitucionalService(DataLoader):
     def desconhecimento_ano_atual(self): 
         df = self.df_load_dados_institucional[['RESPOSTA']]
         total_respostas = self.total_respostas_ano_atual() 
-        pct_desconhecimento_ano_atual = (df['RESPOSTA'].eq('Desconheço').sum() / total_respostas) * 100
+        pct_desconhecimento_ano_atual = (df['RESPOSTA'].eq('Desconheço').sum() / total_respostas ) * 100
         return pct_desconhecimento_ano_atual
     
     def desconhecimento_ano_passado(self): 

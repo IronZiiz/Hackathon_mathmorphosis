@@ -35,12 +35,35 @@ class AvaliacaoDasDisciplinasService(DataLoader):
 
         return df_disciplinas
     
-    def get_total_respondentes(self) ->int: 
+    def _total_respostas_ano_atual(self): 
         df = self.df_disciplinas()
-        return df["ID_PESQUISA"].nunique() 
-
-
+        df = df[['VALOR_RESPOSTA']]
+        total_respostas = len(df)
+        return total_respostas
     
+    def get_total_respondentes_ano_atual(self) ->int: 
+        df = self.df_disciplinas()
+        return df["ID_PESQUISA"].nunique()
+
+    def get_concordancia_atual(self) -> float:
+        df = self.df_disciplinas()
+        total = self._total_respostas_ano_atual()
+        concordancia = len(df[df["VALOR_RESPOSTA"] == 1])
+        return (concordancia / total ) * 100
+
+    def get_discordancia_atual(self) -> float: 
+        df = self.df_disciplinas()
+        df = df[['VALOR_RESPOSTA']]
+        total_respostas = self._total_respostas_ano_atual() 
+        pct_insatisfacao_ano_atual = (df['VALOR_RESPOSTA'].eq(-1).sum() / total_respostas) * 100
+        return pct_insatisfacao_ano_atual
+    
+    def get_desconhecimento(self) -> float: 
+        df = self.df_disciplinas()
+        total = self._total_respostas_ano_atual()
+        discordancia = len(df[df["VALOR_RESPOSTA"] == 0])
+
+        return (discordancia / total ) * 100
     
 
         

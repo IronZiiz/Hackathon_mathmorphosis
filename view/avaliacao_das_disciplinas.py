@@ -36,7 +36,7 @@ def avaliacao_das_disciplinas_view():
         st.metric(
             label="Total Respondentes",
             border=BORDER,
-            value=service.get_total_respondentes(),
+            value=service.get_total_respondentes_ano_atual(),
             delta=f"% Ano passado: "
         )
         
@@ -44,7 +44,7 @@ def avaliacao_das_disciplinas_view():
         st.metric(
             label="Concordância",
             border=BORDER,
-            value=f"%",
+            value=f"{service.get_concordancia_atual():.2f}%",
             delta=1,
             delta_color="normal"
         )
@@ -53,7 +53,7 @@ def avaliacao_das_disciplinas_view():
         st.metric(
             label="Discordância",
             border=BORDER,
-            value=f"%",
+            value=f"{service.get_discordancia_atual():.2f}%",
             delta=2,
             delta_color="inverse"
         )
@@ -62,7 +62,7 @@ def avaliacao_das_disciplinas_view():
         st.metric(
             label="Desconhecimento",
             border=BORDER,
-            value=f"%",
+            value=f"{service.get_desconhecimento():.2f}%",
             delta=1
         )
     

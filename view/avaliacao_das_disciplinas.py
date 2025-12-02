@@ -86,8 +86,8 @@ def avaliacao_das_disciplinas_view():
         disciplina_value= disciplina_value,
         curso_value= curso_value,
         setor_value= setor_value)
-
     st.dataframe(service.df_filtrado_pela_disciplina_curso_setor())
+
     df_disciplina = pd.DataFrame({
     "RESPOSTA": ["Concordo", "Discordo", "Desconheço"],
     "CONTAGEM": [40, 10, 8]
@@ -104,49 +104,13 @@ def avaliacao_das_disciplinas_view():
     })
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("Distribuição total (colocar nome da disciplina)")
-        fig = px.pie(
-            df_disciplina,
-            values="CONTAGEM",
-            names="RESPOSTA",
-            hole=0.5,
-            color="RESPOSTA",
-            color_discrete_map=COLOR_MAP
-        )
-        fig.update_traces(textposition="inside", textinfo="percent+label")
-        fig.update_layout(showlegend=False, margin=dict(t=0,b=0,l=0,r=0))
-        st.plotly_chart(fig, use_container_width=True)
-    with col2:
-        st.subheader("Comparativo por Eixo (Sera um numero fixo)")
-        st.write("")
-        st.write("")
-        df_merged = pd.DataFrame({
-        "EIXO": ["Infraestrutura", "Infraestrutura", "Infraestrutura",
-                "Didática", "Didática", "Didática"],
-        "RESPOSTA": ["Concordo", "Discordo", "Desconheço",
-                    "Concordo", "Discordo", "Desconheço"],
-        "COUNT": [40, 8, 6, 50, 12, 5],
-        "TOTAL": [54, 54, 54, 67, 67, 67]
-    })
+        _, fig_donut = service.grafico_distribuicao_total_donut()
 
-        df_merged["PERCENT"] = (df_merged["COUNT"] / df_merged["TOTAL"]) * 100
-        fig_bar = px.bar(
-        df_merged,
-        x="EIXO",
-        y="PERCENT",
-        color="RESPOSTA",
-        color_discrete_map=COLOR_MAP,
-        barmode="stack",
-        text_auto=".0f",
-        height=400
-        )
-        fig_bar.update_layout(
-        xaxis_title="",
-        yaxis_title="% das Respostas",
-        legend_title="",
-        )
-        fig_bar.update_yaxes(range=[0, 100])
-        st.plotly_chart(fig_bar, use_container_width=True)
+        st.plotly_chart(fig_donut, use_container_width=True)
+    with col2:
+        st.write("")
+        st.write("")
+        st.plotly_chart(service.grafico_resumo_por_eixo(), use_container_width=True)
 
     dimensoes = ["Dimensão 1", "Dimensão 2"]
     dim_sel = st.selectbox(

@@ -103,10 +103,122 @@ class AvaliacaoDasDisciplinasService(DataLoader):
 
         return df
     
-    def grafico_distribuicao_donut(self):
-        df = self.df_filtrado_pela_disciplina()
-        fig = 11
-        return fig
+    def grafico_distribuicao_total_donut(self):
+        disciplina_value = self.disciplina_value
+        curso_value = self.curso_value 
+        setor_value =self.setor_value
+         
 
+        COLOR_MAP = {
+            'Concordo': '#2ecc71',
+            'Discordo': '#e74c3c',
+            'Desconheço': '#95a5a6'
+        }
+
+        df_filtered = self.df_filtrado_pela_disciplina_curso_setor()
+        total_resp = len(df_filtered)
+
+        if total_resp == 0:
+            return None
+
+        df_pizza = df_filtered["RESPOSTA"].value_counts().reset_index()
+        df_pizza.columns = ["RESPOSTA", "CONTAGEM"]
+
+        fig_donut = px.pie(
+            df_pizza,
+            values='CONTAGEM',
+            names='RESPOSTA',
+            hole=0.5,
+            color='RESPOSTA',
+            color_discrete_map=COLOR_MAP
+        )
+
+        fig_donut.update_traces(
+            textposition='inside',
+            textinfo='percent+label'
+            
+        )
+        if curso_value =='Todas': 
+            fig_donut.update_layout(
+            
+                title=f"Distribuição Geral de Respostas: {curso_value}",
+                showlegend=False,
+                margin=dict(t=40, b=0, l=0, r=0),
+                height=400
+            )
+        else:
+            fig_donut.update_layout(
+            
+                title={
+                    'text': f"Distribuição Geral de Respostas",
+                },
+                showlegend=False,
+                margin=dict(t=100, b=0, l=0, r=0),
+                height=400)
+
+
+        return total_resp, fig_donut
         
-    
+    def grafico_resumo_por_eixo(self):
+        COLOR_MAP = {
+        'Concordo': '#2ecc71',
+        'Discordo': '#e74c3c',
+        'Desconheço': '#95a5a6'
+        }
+        
+        df_filtered = self.df_filtrado_pela_disciplina_curso_setor()
+
+        if df_filtered.empty:
+            return None
+        
+        df_filtered['EIXO_NOME'] = df_filtered['EIXO_NOME'].fillna(
+            df_filtered['EIXO_NOME'].str.replace("_", " ").str.title()
+        )
+
+        df_grouped = (
+            df_filtered.groupby(['EIXO_NOME', 'RESPOSTA'])
+            .size()
+            .reset_index(name='COUNT')
+        )
+
+        total_por_eixo = (
+            df_filtered.groupby('EIXO_NOME')
+            .size()
+            .reset_index(name='TOTAL')
+        )
+
+        df_merged = pd.merge(df_grouped, total_por_eixo, on='EIXO_NOME')
+        df_merged['PERCENT'] = (df_merged['COUNT'] / df_merged['TOTAL']) * 100
+        df_merged = df_merged.sort_values('EIXO_NOME')
+
+        df_merged["LABEL"] = df_merged.apply(
+            lambda row: f"{row['PERCENT']:.1f}% ({row['COUNT']})", axis=1
+        )
+
+        fig_bar = px.bar(
+            df_merged,
+            x='EIXO_NOME',
+            y="PERCENT",
+            color="RESPOSTA",
+            color_discrete_map=COLOR_MAP,
+            barmode='stack',
+            text="LABEL",
+            height=500
+        )
+
+        fig_bar.update_traces(
+            textposition="inside",
+            insidetextanchor="middle"
+        )
+
+        fig_bar.update_layout(
+            title = 'Distribuição de respostas por eixos',
+            xaxis_title="Eixo",
+            yaxis_title="% das Respostas",
+            legend_title="",
+            margin=dict(l=10, r=10, t=45, b=0),
+            yaxis=dict(range=[0, 100]),
+            xaxis=dict(tickangle=10)
+        )
+
+        return fig_bar

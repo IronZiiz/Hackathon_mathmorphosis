@@ -86,7 +86,6 @@ def avaliacao_das_disciplinas_view():
         disciplina_value= disciplina_value,
         curso_value= curso_value,
         setor_value= setor_value)
-    st.dataframe(service.df_filtrado_pela_disciplina_curso_setor())
 
     df_disciplina = pd.DataFrame({
     "RESPOSTA": ["Concordo", "Discordo", "Desconheço"],
@@ -190,21 +189,13 @@ def avaliacao_das_disciplinas_view():
     st.header("Comparação com o Setor e Curso")
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("Setor")
-        fig = px.pie(
-            df_setor,
-            values="CONTAGEM",
-            names="RESPOSTA",
-            hole=0.5,
-            color="RESPOSTA",
-            color_discrete_map=COLOR_MAP
-        )
-        fig.update_traces(textposition="inside", textinfo="percent+label")
-        fig.update_layout(showlegend=False, margin=dict(t=0,b=0,l=0,r=0))
-        st.plotly_chart(fig, use_container_width=True)
+        
+        _, fig_donut_setor = service.grafico_donut_setor()        
+        st.plotly_chart(fig_donut_setor, use_container_width=True)
 
     with col2:
-        st.subheader("Curso")
+        _, fig_donut_curso = service.grafico_donut_curso()
+
         fig = px.pie(
             df_curso,
             values="CONTAGEM",
@@ -215,106 +206,13 @@ def avaliacao_das_disciplinas_view():
         )
         fig.update_traces(textposition="inside", textinfo="percent+label")
         fig.update_layout(showlegend=False, margin=dict(t=0,b=0,l=0,r=0))
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig_donut_curso, use_container_width=True)
 
-    with st.expander("Ver dados brutos (Frequências Absolutas) (TEMPORÁRIO0"):
-        st.dataframe()
-        st.download_button('Download Dados brutos',data="aa")
-    import seaborn as sns
-    import matplotlib.pyplot as plt
-    plt.style.use("ggplot") 
-    @st.cache_data
-    def load_data():
-        return pd.read_csv("data/processed/Presencial2025/processed_presencial_2025.csv")
-    df = load_data()
-    df['valor'] = df['VALOR_RESPOSTA']
-    agg = df.groupby('ID_PESQUISA').agg(
-        n_answers=('valor', 'count'),
-        mean_sentiment=('valor', 'mean'),
-        pct_negative=('valor', lambda x: (x == -1).mean()),
-    ).reset_index()
-    st.title("📊 Comportamento dos Respondentes — Sentimento e Engajamento")
+   
 
-    st.markdown("""
-    Este painel mostra como o **sentimento das respostas** se relaciona com a 
-    **quantidade de respostas por pessoa**.  
-    O objetivo é descobrir se pessoas respondem mais quando estão insatisfeitas.
-    """)
-    col1, col2 = st.columns(2)
-    with col1:
-        st.header("📈 Sentimento Médio vs Número de Respostas")
-        fig1 = px.scatter(
-            agg,
-            x="n_answers",
-            y="mean_sentiment",
-            opacity=0.4,
-            color_discrete_sequence=["#1f77b4"],
-            trendline="ols",
-            trendline_color_override="orange"
-        )
+    st.header("Distribuição Geral do Sentimento Médio")
 
-        fig1.update_layout(
-            xaxis_title="Número de Respostas por Pessoa",
-            yaxis_title="Sentimento Médio (–1 negativo, +1 positivo)",
-            title="Sentimento vs Quantidade de Respostas",
-            height=500,
-            showlegend=True
-        )
-
-        st.plotly_chart(fig1, use_container_width=True)
-
-        st.markdown("""
-        **Insight:** Mesmo pessoas que respondem muito continuam tendo avaliações majoritariamente positivas.
-        Não existe tendência de maior negatividade entre usuários mais ativos.
-        """)
-
-
-    with col2:
-        st.header("📉 Percentual de Respostas Negativas vs Número de Respostas")
-
-        fig2 = px.scatter(
-            agg,
-            x="n_answers",
-            y="pct_negative",
-            opacity=0.4,
-            color_discrete_sequence=["red"],
-            trendline="ols",
-            trendline_color_override="orange"
-        )
-
-        fig2.update_layout(
-            xaxis_title="Número de Respostas por Pessoa",
-            yaxis_title="Percentual de Respostas Negativas",
-            title="Negatividade vs Número de Respostas",
-            height=500,
-            showlegend=True
-        )
-
-        st.plotly_chart(fig2, use_container_width=True)
-
-        st.markdown("""
-        **Insight:** O percentual de respostas negativas permanece baixo e não aumenta com o número de respostas.
-        """)
-    st.header("📊 Distribuição Geral do Sentimento Médio")
-
-    fig3 = px.histogram(
-        agg,
-        x="mean_sentiment",
-        nbins=30,
-        title="Distribuição do Sentimento Médio",
-        color_discrete_sequence=["#1f77b4"], 
-        opacity=0.8
-    )
-
-    fig3.update_layout(
-        xaxis_title="Sentimento Médio por Pessoa",
-        yaxis_title="Quantidade de Pessoas",
-        bargap=0.1, 
-        height=500
-    )
-    fig3.add_vline(x=0, line_width=2, line_dash="dash", line_color="gray", annotation_text="Neutro")
-
-    st.plotly_chart(fig3, use_container_width=True)
+    st.plotly_chart(service.grafico_distribuicao_geral_sentimento(), use_container_width=True)
 
     st.markdown("""
     **Insight:** A grande maioria dos respondentes tem sentimento médio entre **0 e +1**, 
@@ -322,5 +220,8 @@ def avaliacao_das_disciplinas_view():
     """)
 
     st.markdown("---")
+    with st.expander("Ver dados brutos (Frequências Absolutas) (TEMPORÁRIO0"):
+        st.dataframe()
+        st.download_button('Download Dados brutos',data="aa")
 
     

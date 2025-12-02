@@ -104,9 +104,7 @@ class AvaliacaoDasDisciplinasService(DataLoader):
         return df
     
     def grafico_distribuicao_total_donut(self):
-        disciplina_value = self.disciplina_value
         curso_value = self.curso_value 
-        setor_value =self.setor_value
          
 
         COLOR_MAP = {
@@ -222,3 +220,134 @@ class AvaliacaoDasDisciplinasService(DataLoader):
         )
 
         return fig_bar
+    
+    def grafico_donut_setor(self): 
+        df = self.df_disciplinas()
+
+        COLOR_MAP = {
+            'Concordo': '#2ecc71',
+            'Discordo': '#e74c3c',
+            'Desconheço': '#95a5a6'
+        }
+
+        setor_value = self.setor_value
+        curso_value = self.curso_value
+
+        if setor_value == "Todas":
+            df_filtered = df.copy()
+        else:
+            df_filtered = df[df['SETOR_CURSO'] == setor_value]
+
+        total_resp = len(df_filtered)
+        if total_resp == 0:
+            return None
+
+        df_pizza = df_filtered["RESPOSTA"].value_counts().reset_index()
+        df_pizza.columns = ["RESPOSTA", "CONTAGEM"]
+
+        fig_donut = px.pie(
+            df_pizza,
+            values='CONTAGEM',
+            names='RESPOSTA',
+            hole=0.5,
+            color='RESPOSTA',
+            color_discrete_map=COLOR_MAP
+        )
+
+        fig_donut.update_traces(
+            textposition='inside',
+            textinfo='percent+label'
+        )
+
+        if setor_value == "Todas":
+            titulo = "Distribuição Geral de Respostas: Todos os Setores"
+        else:
+            titulo = f"Distribuição Geral de Respostas – Setor: {setor_value}"
+
+        fig_donut.update_layout(
+            title=titulo,
+            showlegend=False,
+            margin=dict(t=40, b=0, l=0, r=0),
+            height=400
+        )
+
+        return total_resp, fig_donut
+    def grafico_donut_curso(self): 
+        df = self.df_disciplinas()
+
+        COLOR_MAP = {
+            'Concordo': '#2ecc71',
+            'Discordo': '#e74c3c',
+            'Desconheço': '#95a5a6'
+        }
+
+        curso_value = self.curso_value
+
+        if curso_value == "Todas":
+            df_filtered = df.copy()
+        else:
+            df_filtered = df[df['CURSO'] == curso_value]
+
+        total_resp = len(df_filtered)
+        if total_resp == 0:
+            return None
+
+        df_pizza = df_filtered["RESPOSTA"].value_counts().reset_index()
+        df_pizza.columns = ["RESPOSTA", "CONTAGEM"]
+
+        fig_donut = px.pie(
+            df_pizza,
+            values='CONTAGEM',
+            names='RESPOSTA',
+            hole=0.5,
+            color='RESPOSTA',
+            color_discrete_map=COLOR_MAP
+        )
+
+        fig_donut.update_traces(
+            textposition='inside',
+            textinfo='percent+label'
+        )
+
+        if curso_value == "Todas":
+            titulo = "Distribuição Geral de Respostas: Todos os Cursos"
+        else:
+            titulo = f"Distribuição Geral de Respostas – Curso: {curso_value}"
+
+        fig_donut.update_layout(
+            title=titulo,
+            showlegend=False,
+            margin=dict(t=40, b=0, l=0, r=0),
+            height=400
+        )
+
+        return total_resp, fig_donut
+
+    def grafico_distribuicao_geral_sentimento(self): 
+        df = self.df_disciplinas()
+        df['valor'] = df['VALOR_RESPOSTA']
+        agg = df.groupby('ID_PESQUISA').agg(
+            n_answers=('valor', 'count'),
+            mean_sentiment=('valor', 'mean'),
+            pct_negative=('valor', lambda x: (x == -1).mean()),
+        ).reset_index()
+
+
+        fig3 = px.histogram(
+            agg,
+            x="mean_sentiment",
+            nbins=30,
+            title="Distribuição do Sentimento Médio",
+            color_discrete_sequence=["#1f77b4"], 
+            opacity=0.8
+        )
+
+        fig3.update_layout(
+            xaxis_title="Sentimento Médio por Pessoa",
+            yaxis_title="Quantidade de Pessoas",
+            bargap=0.1, 
+            height=500
+        )
+        fig3.add_vline(x=0, line_width=2, line_dash="dash", line_color="gray", annotation_text="Neutro")
+
+        return fig3 

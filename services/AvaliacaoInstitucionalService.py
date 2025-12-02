@@ -408,7 +408,5 @@ class AvaliacaoInstitucionalService(DataLoader):
         fig_div.add_vline(x=0, line_width=1, line_color="black", opacity=0.3)
 
         return fig_div
-
-
-        
-        
+            
+            

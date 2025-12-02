@@ -377,7 +377,7 @@ class AvaliacaoInstitucionalService(DataLoader):
         # Discordo (Empilha na esquerda, depois do desconheço negativo)
         fig_div.add_trace(go.Bar(
             y=questions_formatted, x=discordo_neg_list,
-            name='Discordo', orientation='h', marker_color='#e74c3c',
+            name='Discordo', orientation='h', marker_color='#e74c3c', 
             text=[f"{x:.1f}%" if x > 1 else "" for x in discordo_list],
             textposition='inside', insidetextanchor='middle',
             hoverinfo='text+y', hovertext=[f"Discordância: {x:.1f}%" for x in discordo_list]

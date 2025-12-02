@@ -15,6 +15,8 @@ COLOR_MAP = {
 
 def avaliacao_dos_cursos_view():
     service = AvaliacaoDosCursosService()
+    df = service.df
+    st.dataframe(df)
     st.title("Resultados Avaliação dos Cursos")
 
     col1,_,_,_,_,_= st.columns(6)

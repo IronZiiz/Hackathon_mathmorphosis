@@ -116,7 +116,7 @@ def avaliacao_institucional_view():
     col_graf1, col_graf2 = st.columns(2)
     
     with col_graf1:
-        total_resp, fig_donut_dist_total = service.grafico_distribuicao_total_donut()
+        total_resp, fig_donut_dist_total = service.grafico_distribuicao_total_donut() 
         if total_resp > 0:
             st.plotly_chart(fig_donut_dist_total, use_container_width=True)
             st.caption(f"Total de respostas consideradas por pergunta:{total_resp}")

@@ -20,11 +20,22 @@ class LoginService:
 
         self.submitted_value = submitted_value
 
-    def authenticate(self) -> bool:
+    def authenticate(self) -> dict:
         """
-        Retorna True se as credenciais forem válidas.
+        Valida as credenciais e retorna um objeto contendo:
+        - success: True/False
+        - message: mensagem amigável
         """
-        return (
-            self.username == self.valid_username and
-            self.password == self.valid_password
-        )
+        if self.username == self.valid_username and self.password == self.valid_password:
+            return {
+                "success": True,
+                "message": "Login realizado com sucesso!"
+            }
+        else:
+            return {
+                "success": False,
+                "message": "Usuário ou senha incorretos."
+            }
+        
+  
+

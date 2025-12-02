@@ -3,7 +3,7 @@ from view.home import home_view
 from view.avaliacao_institucional import avaliacao_institucional_view
 from view.avaliacao_das_disciplinas import avaliacao_das_disciplinas_view
 from view.avaliacao_dos_cursos import avaliacao_dos_cursos_view
-from view.login  import login_view
+from view.login import login_view
 
 
 
@@ -37,3 +37,4 @@ def main():
         login_view()
 
 
+main()

@@ -134,7 +134,7 @@ def avaliacao_das_disciplinas_view():
 
         if total_resp > 0:
             st.plotly_chart(fig_donut, use_container_width=True)
-            st.caption(f"Total de respostas consideradas por pergunta:{total_resp}")
+            st.caption(f"Total de respostas consideradas:{total_resp}")
         else:
             st.warning("Sem dados para os filtros selecionados.")
     with col2:

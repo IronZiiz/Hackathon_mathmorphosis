@@ -141,7 +141,7 @@ def avaliacao_institucional_view():
             opacity:1;
             line-height:1;
         ">
-        A seguir, são apresentados gráficos que ilustram a distribuição das respostas dos participantes filtrados pelo eixo(s) selecionado(s) em relação às perguntas selecionadas. 
+        A seguir, são apresentados gráficos que ilustram a distribuição das respostas dos participantes filtrados pelo eixo(s) selecionado(s) em relação às afirmações selecionadas. 
         </p>
         """,unsafe_allow_html=True)
         
@@ -162,6 +162,7 @@ def avaliacao_institucional_view():
     st.markdown("---")
 
     st.subheader('Participação das Unidades gestoras nas Pesquisas')
+    
     st.markdown(
         """
         <p style="

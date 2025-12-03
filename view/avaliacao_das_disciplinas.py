@@ -110,6 +110,22 @@ def avaliacao_das_disciplinas_view():
         disciplina_value= disciplina_value,
         curso_value= curso_value,
         setor_value= setor_value)
+    st.markdown("---")
+    st.subheader('Distribuição de respostas')
+    st.markdown(
+        """
+        <p style="
+            text-align:left;
+            max-width:750px;
+            margin:10px 0px 20px 0px;
+            font-size:1rem;
+            color:#555;
+            opacity:1;
+            line-height:1;
+        ">
+        A seguir, são apresentados gráficos que ilustram a distribuição das respostas dos participantes pelo eixo selecionado  em relação às afirmações feitas pela pesquisa. 
+        </p>
+        """,unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     with col1:
@@ -120,8 +136,27 @@ def avaliacao_das_disciplinas_view():
         st.write("")
         st.write("")
         st.plotly_chart(service.grafico_resumo_por_eixo(), use_container_width=True)
+    
+    st.warning("Sim e Não representam as respostas seletoras, ou seja aquelas que indicam uma opinião clara e dão sequência a possibilidade de corcordar, discordar ou desconhecer uma afirmação .", icon="⚠️")
+
+    st.markdown("---")
+
 
     st.subheader('Análise detalhada das perguntas')
+    st.markdown(
+        """
+        <p style="
+            text-align:left;
+            max-width:750px;
+            margin:0px 0px 20px 0px;
+            font-size:1rem;
+            color:#555;
+            opacity:1;
+            line-height:1;
+        ">
+        A seguir, é possível selecionar uma dimensão específica para uma análise detalhada das perguntas relacionadas a essa dimensão.
+                </p>
+        """,unsafe_allow_html=True)
 
     df = service.df_disciplinas()
     df_dim = df[['DIMENSAO_NUM', 'DIMENSAO_NOME']].drop_duplicates()
@@ -145,8 +180,22 @@ def avaliacao_das_disciplinas_view():
     st.plotly_chart(service.grafico_saldo_opiniao_dimensao(), use_container_width=True, key = "grafico_saldo_opiniao")
 
     
-
+    st.markdown("---")
     st.header("Comparação com o Setor e Curso")
+    st.markdown(
+        """
+        <p style="
+            text-align:left;
+            max-width:750px;
+            margin:0px 0px 20px 0px;
+            font-size:1rem;
+            color:#555;
+            opacity:1;
+            line-height:1;
+        ">
+        A seguir, são apresentados gráficos que ilustram a comparação do sentimento médio da disciplina selecionada com o setor e curso correspondentes.
+                        </p>
+        """,unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         
@@ -157,16 +206,42 @@ def avaliacao_das_disciplinas_view():
         _, fig_donut_curso = service.grafico_donut_curso()
         st.plotly_chart(fig_donut_curso, use_container_width=True)
 
+    st.warning("Sim e Não representam as respostas seletoras, ou seja aquelas que indicam uma opinião clara e dão sequência a possibilidade de corcordar, discordar ou desconhecer uma afirmação .", icon="⚠️")
    
-
+    st.markdown("---")
     st.header("Distribuição Geral do Sentimento Médio")
+    st.markdown(
+        """
+        <p style="
+            text-align:left;
+            max-width:750px;
+            margin:0px 0px 20px 0px;
+            font-size:1rem;
+            color:#555;
+            opacity:1;
+            line-height:1;
+        ">
+        A seguir, é apresentado um gráfico que ilustra a distribuição geral do sentimento médio dos respondentes.
+                                </p>
+        """,unsafe_allow_html=True)
 
     st.plotly_chart(service.grafico_distribuicao_geral_sentimento(), use_container_width=True)
-
-    st.markdown("""
+    
+    with st.expander("O que é o Sentimento Médio?", expanded=False):
+        st.info(
+            "O sentimento é representado em uma escala de -1 a +1. "
+            "Valores **positivos** (concordância) indicam percepção favorável; "
+            "valores **negativos** (discordância) indicam percepção desfavorável; "
+            "**0** representa neutralidade. "
+            "O valor é calculado pela média dos pesos atribuídos às respostas. "
+            "Por exemplo, se um respondente concorda em 3 de 3 perguntas, seu sentimento será **3 ÷ 3 = 1**.",
+            icon="ℹ️"
+)
+    st.warning("""
     **Insight:** A grande maioria dos respondentes tem sentimento médio entre **0 e +1**, 
     mostrando que o padrão geral é positivo.
     """)
+  
 
     st.markdown("---")
     with st.expander("Ver dados brutos (Frequências Absolutas) (TEMPORÁRIO0"):

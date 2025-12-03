@@ -123,7 +123,7 @@ def avaliacao_das_disciplinas_view():
             opacity:1;
             line-height:1;
         ">
-        A seguir, são apresentados gráficos que ilustram a distribuição das respostas dos participantes pelo eixo selecionado  em relação às afirmações feitas pela pesquisa. 
+        A seguir, são apresentados gráficos que ilustram a distribuição das respostas dos participantes pelo eixo  em relação às afirmações feitas pela pesquisa. 
         </p>
         """,unsafe_allow_html=True)
 

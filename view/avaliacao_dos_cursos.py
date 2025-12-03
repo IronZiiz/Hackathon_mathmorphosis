@@ -12,18 +12,38 @@ COLOR_MAP = {
     'Desconheço': '#95a5a6'
 }
 
-
+COLOR_UFPR_BLUE = '#00548e'
+COLOR_UFPR_BLACK ='#231F20'
 def avaliacao_dos_cursos_view():
     service = AvaliacaoDosCursosService()
-    df = service.df
-    
-    # st.dataframe(df)
 
-    st.title("Resultados Avaliação dos Cursos")
+    st.markdown(
+        f"""
+        <h1 style="text-align:left; font-size:3.4rem; font-weight:700;">
+            <span style="color:{COLOR_UFPR_BLACK}">Resultados</span>
+            <span style="color:{COLOR_UFPR_BLUE}">Avaliação dos Cursos</span>
+        </h1>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown(
+        """
+        <p style="
+            text-align:left;
+            max-width:750px;
+            margin:0px 0px 20px 0px;
+            font-size:1rem;
+            color:#555;
+            opacity:1;
+            line-height:1;
+        ">
+        A Avaliação dos Cursos é uma ferramenta essencial para medir a satisfação e o engajamento dos estudantes em relação aos cursos oferecidos pela instituição.
+                </p>
+        """,unsafe_allow_html=True)
 
     col1,_,_,_,_,_= st.columns(6)
     with col1:
-        year_value = st.selectbox('Selecione o Ano/Período',('2025','2024'), 
+        year_value = st.selectbox('Selecione o Ano',('2025','2024'), 
                                                              index = 1,key = "year_value_cursos")
     col1,col2,col3, col4 = st.columns(4)
 
@@ -84,8 +104,23 @@ def avaliacao_dos_cursos_view():
         setor_value=setor_value,
         
         )
+    st.markdown("---")
     
     st.subheader('Distribuição de respostas')
+    st.markdown(
+        """
+        <p style="
+            text-align:left;
+            max-width:750px;
+            margin:10px 0px 20px 0px;
+            font-size:1rem;
+            color:#555;
+            opacity:1;
+            line-height:1;
+        ">
+        A seguir, são apresentados gráficos que ilustram a distribuição das respostas dos participantes pelo eixo  em relação às afirmações feitas pela pesquisa. 
+        </p>
+        """,unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
 
@@ -104,6 +139,22 @@ def avaliacao_dos_cursos_view():
 
     dimensoes = service.df['DIMENSAO_NOME'].unique().tolist()
 
+    st.markdown("---")
+    st.subheader('Análise detalhada das perguntas')
+    st.markdown(
+        """
+        <p style="
+            text-align:left;
+            max-width:750px;
+            margin:0px 0px 20px 0px;
+            font-size:1rem;
+            color:#555;
+            opacity:1;
+            line-height:1;
+        ">
+        A seguir, é possível selecionar uma dimensão específica para uma análise detalhada das perguntas relacionadas a essa dimensão.
+                </p>
+        """,unsafe_allow_html=True)
     dim_sel = st.selectbox(
     "Selecione a Dimensão para Análise Detalhada:",
         dimensoes ,key = "dimensao_curso"
@@ -207,45 +258,45 @@ def avaliacao_dos_cursos_view():
 
     dimensoes = sorted(service.df['DIMENSAO_NOME'].dropna().unique()) # Pega dimensões reais do banco
     
-    dim_sel = st.selectbox(
-    "Selecione a Dimensão...",
-    dimensoes,
-    key="dimensao_curso_radar"
-    )
+    # dim_sel = st.selectbox(
+    # "Selecione a Dimensão...",
+    # dimensoes,
+    # key="dimensao_curso_radar"
+    # )
 
-    service.dimensao_value = dim_sel
+    # service.dimensao_value = dim_sel
 
-    # Layout: 2 colunas para o Radar (Gráfico + Tabela) | 1 Coluna para Barras
-    col_radar_grafico, col_radar_legenda = st.columns([1.2, 0.8])
+    # # Layout: 2 colunas para o Radar (Gráfico + Tabela) | 1 Coluna para Barras
+    # col_radar_grafico, col_radar_legenda = st.columns([1.2, 0.8])
 
-    # --- COLUNA 1: O GRÁFICO ---
-    with col_radar_grafico:
-        st.subheader("Comparativo Radar")
+    # # --- COLUNA 1: O GRÁFICO ---
+    # with col_radar_grafico:
+    #     st.subheader("Comparativo Radar")
     
-        # Chama a função nova (que retorna 2 coisas)
-        fig_radar_dim, df_legenda_radar = service.grafico_radar_dimensao_curso()
+    #     # Chama a função nova (que retorna 2 coisas)
+    #     fig_radar_dim, df_legenda_radar = service.grafico_radar_dimensao_curso()
         
-        if fig_radar_dim:
-            st.plotly_chart(fig_radar_dim, use_container_width=True)
-        else:
-            st.warning("Sem dados para radar.")
+    #     if fig_radar_dim:
+    #         st.plotly_chart(fig_radar_dim, use_container_width=True)
+    #     else:
+    #         st.warning("Sem dados para radar.")
 
-    # --- COLUNA 2: A LEGENDA (ID -> PERGUNTA) ---
-    with col_radar_legenda:
-        st.subheader("Legenda")
-        if df_legenda_radar is not None and not df_legenda_radar.empty:
-            # Configura a tabela para ficar bonita
-            st.dataframe(
-                df_legenda_radar,
-                hide_index=True, # Esconde o índice numérico (0, 1, 2)
-                column_config={
-                    "ID_PERGUNTA": st.column_config.TextColumn("ID", width="small"),
-                    "PERGUNTA": st.column_config.TextColumn("Pergunta Completa")
-                },
-                height=400 # Mesma altura do gráfico
-            )
-        else:
-            st.write("-")
+    # # --- COLUNA 2: A LEGENDA (ID -> PERGUNTA) ---
+    # with col_radar_legenda:
+    #     st.subheader("Legenda")
+    #     if df_legenda_radar is not None and not df_legenda_radar.empty:
+    #         # Configura a tabela para ficar bonita
+    #         st.dataframe(
+    #             df_legenda_radar,
+    #             hide_index=True, # Esconde o índice numérico (0, 1, 2)
+    #             column_config={
+    #                 "ID_PERGUNTA": st.column_config.TextColumn("ID", width="small"),
+    #                 "PERGUNTA": st.column_config.TextColumn("Pergunta Completa")
+    #             },
+    #             height=400 # Mesma altura do gráfico
+    #         )
+    #     else:
+    #         st.write("-")
 
     # ------------ #
     st.markdown('---')

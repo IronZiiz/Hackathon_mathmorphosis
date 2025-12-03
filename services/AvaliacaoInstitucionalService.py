@@ -5,7 +5,12 @@ from services.DataLoader  import DataLoader
 
 
 
-class AvaliacaoInstitucionalService(DataLoader): 
+class AvaliacaoInstitucionalService(DataLoader):
+    """Serviço para análise dos dados de avaliação institucional.
+
+    Fornece métodos para filtrar os dados, calcular métricas de
+    respondentes/respostas e gerar gráficos de distribuição e resumo.
+    """
     def __init__(
         self, 
         eixos_value=None,
@@ -13,6 +18,15 @@ class AvaliacaoInstitucionalService(DataLoader):
         dimensao_value = None,
         df_load_dados_institucional=None,
     ):
+        """Inicializa o serviço com filtros e DataFrame opcional.
+
+        Parâmetros
+        ----------
+        eixos_value, perguntas_value, dimensao_value : opcionais
+            Valores usados para filtrar os dados nas visualizações.
+        df_load_dados_institucional : pd.DataFrame | None
+            DataFrame com os dados institucionais. Se None, é carregado via DataLoader.
+        """
         if df_load_dados_institucional is None:
             df_load_dados_institucional = DataLoader.load_dados_institucional()
 
@@ -22,12 +36,19 @@ class AvaliacaoInstitucionalService(DataLoader):
         self.dimensao_value = dimensao_value
     
     def formatar_eixos(self) -> list:
+        """Retorna lista de eixos disponíveis (iniciando por 'Todos')."""
         df = self.df_load_dados_institucional
         list_eixos = list(df['EIXO_NOME'].unique())
 
         return ['Todos'] + list_eixos
     
     def filtrar_dados_institucionais(self):
+        """Filtra os dados institucionais por eixo e pergunta.
+
+        Retorna um DataFrame filtrado de acordo com `self.eixos_value` e
+        `self.perguntas_value`. Se o valor for 'Todos' ou vazio, não aplica
+        o respectivo filtro.
+        """
         df = self.df_load_dados_institucional.copy()
 
         eixo_value = self.eixos_value
@@ -47,69 +68,78 @@ class AvaliacaoInstitucionalService(DataLoader):
             perguntas_extraidas = [p.split(" - ", 1)[1] for p in pergunta_value]
             df_filtered = df_filtered[df_filtered["PERGUNTA"].isin(perguntas_extraidas)]
 
-        
         return df_filtered
-
-
     
     def total_respondentes_ano_atual(self): 
+        """Retorna a quantidade de respondentes únicos no ano atual."""
         df = self.df_load_dados_institucional
         qtd_respondentes_atual = df['ID_PESQUISA'].nunique()
         return qtd_respondentes_atual
     
     def total_respondentes_ano_passado(self): 
+        """Compara o número de respondentes com um valor fixo do ano anterior.
+
+        Retorna (percentual_de_comparacao, qtd_respondentes_ano_passado).
+        """
         qtd_respondentes_ano_atual = self.total_respondentes_ano_atual()
         qtd_respondentes_ano_passado = 500
-        pct_comparacao_ano_atual =(qtd_respondentes_ano_atual/qtd_respondentes_ano_passado - 1)*100
-        return pct_comparacao_ano_atual,qtd_respondentes_ano_passado
+        pct_comparacao_ano_atual = (qtd_respondentes_ano_atual / qtd_respondentes_ano_passado - 1) * 100
+        return pct_comparacao_ano_atual, qtd_respondentes_ano_passado
     
-    # satisfação = concordancia pois frases afirmativas positivas
     def total_respostas_ano_atual(self): 
+        """Retorna o total de respostas registradas no ano atual."""
         df = self.df_load_dados_institucional[['RESPOSTA']]
         total_respostas = len(df)
         return total_respostas
 
     def satisfacao_ano_atual(self):
+        """Retorna a porcentagem de respostas 'Concordo' no ano atual."""
         df = self.df_load_dados_institucional[['RESPOSTA']]
-        total_respostas = self.total_respostas_ano_atual() 
-        
+        total_respostas = self.total_respostas_ano_atual()
+
         pct_satisfacao_ano_atual = (df['RESPOSTA'].eq('Concordo').sum() / total_respostas) * 100
 
         return pct_satisfacao_ano_atual
     
     def satisfacao_ano_passado(self): 
+        """Retorna valor fixo de satisfação para o ano passado (placeholder)."""
         pct_satisfacao_ano_passado = 50
         return pct_satisfacao_ano_passado
     
     def satisfacao_ano_passado(self):
-            pct_satisfacao_ano_passado = 40
-            return pct_satisfacao_ano_passado
+        """(Sobrescrito) Retorna valor fixo de satisfação anterior."""
+        pct_satisfacao_ano_passado = 40
+        return pct_satisfacao_ano_passado
     
     def insatisfacao_ano_passado(self):
-            pct_insatisfacao_ano_passado = 40
-            return pct_insatisfacao_ano_passado
+        """Retorna valor fixo de insatisfação no ano passado (placeholder)."""
+        pct_insatisfacao_ano_passado = 40
+        return pct_insatisfacao_ano_passado
     
     def desconhecimento_ano_passado(self):
-            pct_desconhecimento_ano_passado = 20
-            return pct_desconhecimento_ano_passado
-    
+        """Retorna valor fixo de desconhecimento no ano passado (placeholder)."""
+        pct_desconhecimento_ano_passado = 20
+        return pct_desconhecimento_ano_passado
     
     def insatisfacao_ano_atual(self):
+        """Retorna a porcentagem de respostas 'Discordo' no ano atual."""
         df = self.df_load_dados_institucional[['RESPOSTA']]
-        total_respostas = self.total_respostas_ano_atual() 
-        pct_insatisfacao_ano_atual = (df['RESPOSTA'].eq('Discordo').sum() / total_respostas ) * 100
+        total_respostas = self.total_respostas_ano_atual()
+        pct_insatisfacao_ano_atual = (df['RESPOSTA'].eq('Discordo').sum() / total_respostas) * 100
         return pct_insatisfacao_ano_atual
-    
-    
-    
+           
     def desconhecimento_ano_atual(self): 
+        """Retorna a porcentagem de respostas 'Desconheço' no ano atual."""
         df = self.df_load_dados_institucional[['RESPOSTA']]
-        total_respostas = self.total_respostas_ano_atual() 
-        pct_desconhecimento_ano_atual = (df['RESPOSTA'].eq('Desconheço').sum() / total_respostas ) * 100
+        total_respostas = self.total_respostas_ano_atual()
+        pct_desconhecimento_ano_atual = (df['RESPOSTA'].eq('Desconheço').sum() / total_respostas) * 100
         return pct_desconhecimento_ano_atual
     
     def grafico_distribuicao_total_donut(self):
+        """Gera um gráfico donut com a distribuição geral de respostas.
 
+        Retorna (total_respostas, figura) ou None se não houver respostas.
+        """
         COLOR_MAP = {
             'Concordo': '#2ecc71',
             'Discordo': '#e74c3c',
@@ -134,11 +164,7 @@ class AvaliacaoInstitucionalService(DataLoader):
             color_discrete_map=COLOR_MAP
         )
 
-        fig_donut.update_traces(
-            textposition='inside',
-            textinfo='percent+label'
-            
-        )
+        fig_donut.update_traces(textposition='inside', textinfo='percent+label')
 
         fig_donut.update_layout(
             title="Distribuição Geral de Respostas",
@@ -150,6 +176,7 @@ class AvaliacaoInstitucionalService(DataLoader):
         return total_resp, fig_donut
     
     def get_respondentes_filtrados(self):
+        """Retorna (respondentes_unicos, total_respostas) após aplicar filtros."""
         df = self.filtrar_dados_institucionais()
         if df.empty or 'ID_PESQUISA' not in df.columns:
             return 0, 0
@@ -159,8 +186,8 @@ class AvaliacaoInstitucionalService(DataLoader):
 
         return total_respondentes, total_respostas
 
-
     def get_concordancia_filtrado(self):
+        """Retorna (percentual_concordancia, total_concordancia) para os dados filtrados."""
         df = self.filtrar_dados_institucionais()
         _, total_respostas = self.get_respondentes_filtrados()
 
@@ -175,9 +202,8 @@ class AvaliacaoInstitucionalService(DataLoader):
         pct = (total_concordo / total_respostas) * 100
         return pct, total_concordo
 
-
-
     def get_discordancia_filtrado(self):
+        """Retorna (percentual_discordancia, total_discordancia) para os dados filtrados."""
         df = self.filtrar_dados_institucionais()
         _, total_respostas = self.get_respondentes_filtrados()
 
@@ -192,9 +218,8 @@ class AvaliacaoInstitucionalService(DataLoader):
         pct = (total_discordo / total_respostas) * 100
         return pct, total_discordo
 
-
-
     def get_desconhecimento_filtrado(self):
+        """Retorna (percentual_desconhecimento, total_desconhecimento) para os dados filtrados."""
         df = self.filtrar_dados_institucionais()
         _, total_respostas = self.get_respondentes_filtrados()
 
@@ -209,21 +234,22 @@ class AvaliacaoInstitucionalService(DataLoader):
         pct = (total_desc / total_respostas) * 100
         return pct, total_desc
 
-
-
-
     def grafico_resumo_por_eixo(self):
+        """Gera um gráfico de barras empilhadas com a distribuição por eixo.
+
+        Retorna o objeto de figura Plotly ou None se não houver dados.
+        """
         COLOR_MAP = {
-        'Concordo': '#2ecc71',
-        'Discordo': '#e74c3c',
-        'Desconheço': '#95a5a6'
+            'Concordo': '#2ecc71',
+            'Discordo': '#e74c3c',
+            'Desconheço': '#95a5a6'
         }
-        
+
         df_filtered = self.filtrar_dados_institucionais()
 
         if df_filtered.empty:
             return None
-        
+
         df_filtered['EIXO_NOME'] = df_filtered['EIXO_NOME'].fillna(
             df_filtered['EIXO_NOME'].str.replace("_", " ").str.title()
         )
@@ -259,13 +285,10 @@ class AvaliacaoInstitucionalService(DataLoader):
             height=500
         )
 
-        fig_bar.update_traces(
-            textposition="inside",
-            insidetextanchor="middle"
-        )
+        fig_bar.update_traces(textposition="inside", insidetextanchor="middle")
 
         fig_bar.update_layout(
-            title = 'Distribuição de respostas por eixos',
+            title='Distribuição de respostas por eixos',
             xaxis_title="Eixo",
             yaxis_title="% das Respostas",
             legend_title="",
@@ -276,9 +299,8 @@ class AvaliacaoInstitucionalService(DataLoader):
 
         return fig_bar
 
-
-    
     def preparar_dados_unidade_gestora(self):
+        """Prepara DataFrame com contagem de respostas por unidade gestora."""
         df = self.filtrar_dados_institucionais()
         df = df[['ID_PESQUISA', 'UNIDADE GESTORA']]
         df = df.dropna(subset=['UNIDADE GESTORA'])
@@ -292,12 +314,11 @@ class AvaliacaoInstitucionalService(DataLoader):
 
         return dataframe_fig
 
-    
     def grafico_barra_unidade_gestora(self):
+        """Gera gráfico de barras horizontais com top 10 unidades gestoras."""
         dataframe_fig = self.preparar_dados_unidade_gestora()
         dataframe_fig = dataframe_fig.nlargest(10, 'TOTAL_RESPOSTAS')
         dataframe_fig = dataframe_fig.sort_values('TOTAL_RESPOSTAS', ascending=True)
-
 
         fig_bar = go.Figure()
         fig_bar.add_trace(go.Bar(
@@ -319,6 +340,7 @@ class AvaliacaoInstitucionalService(DataLoader):
         return fig_bar
     
     def grafico_donut_top10(self):
+        """Gera gráfico donut mostrando participação do top 10 unidades gestoras."""
         df = self.df_load_dados_institucional[['ID_PESQUISA', 'UNIDADE GESTORA']].dropna()
         df_unique = df.drop_duplicates(subset=['ID_PESQUISA'])
 
@@ -359,16 +381,17 @@ class AvaliacaoInstitucionalService(DataLoader):
         return fig_donut
 
     def grafico_saldo_opiniao_dimensao(self):
+        """Gera figura com saldo de opinião por pergunta para a dimensão selecionada.
+
+        Se `self.dimensao_value` não estiver definida ou a coluna necessária
+        estiver ausente, retorna None.
+        """
         df = self.df_load_dados_institucional.copy()
-        
-        # O valor selecionado na tela (ex: "Missão e Plano...")
-        dim_sel = self.dimensao_value 
-        print('Essa é a porra do problema: ', dim_sel)
+
+        dim_sel = self.dimensao_value
         if not dim_sel:
             return None
 
-        # --- CORREÇÃO PRINCIPAL ---
-        # Filtra direto pela coluna 'DIMENSAO' que já existe no seu CSV novo
         if 'DIMENSAO_NOME' not in df.columns:
             return None
 
@@ -377,83 +400,65 @@ class AvaliacaoInstitucionalService(DataLoader):
         if df_filtered.empty:
             return None
 
-        # 2. Processamento dos Dados (Crosstab é mais seguro que groupby manual)
-        # normalize='index' garante que a soma das linhas seja 100%
         stats_pct = pd.crosstab(
-            df_filtered['PERGUNTA'], 
-            df_filtered['RESPOSTA'], 
+            df_filtered['PERGUNTA'],
+            df_filtered['RESPOSTA'],
             normalize='index'
         ) * 100
 
-        # 3. Garante que todas as colunas existem (mesmo se ninguém respondeu)
         for col in ['Concordo', 'Discordo', 'Desconheço']:
             if col not in stats_pct.columns:
                 stats_pct[col] = 0.0
 
-        # 4. Ordenação (Opcional: ordena pelos que tem mais concordância)
         stats_pct = stats_pct.sort_values('Concordo', ascending=True)
 
-        # 5. Preparação das Listas
         questions = stats_pct.index.tolist()
         concordo_list = stats_pct['Concordo'].tolist()
         discordo_list = stats_pct['Discordo'].tolist()
         desconheco_list = stats_pct['Desconheço'].tolist()
 
-        # Preparação Matemática para o Centro (Dividir Desconheço em 2)
         desconheco_metade = [x / 2 for x in desconheco_list]
         desconheco_metade_neg = [-x for x in desconheco_metade]
         discordo_neg_list = [-x for x in discordo_list]
 
-        # Labels para o hover (mostrando o valor total, não a metade)
         hover_desconheco = [f"Desconheço: {x:.1f}%" for x in desconheco_list]
-        # Só mostra texto na barra se for maior que 1% para não poluir
         text_desconheco = [f"{x:.1f}%" if x > 1 else "" for x in desconheco_list]
 
-        # 6. Formatação de Texto (Helper interno ou textwrap)
         def quebrar_texto(texto, max_chars=60):
-            if len(texto) <= max_chars: return texto
+            if len(texto) <= max_chars:
+                return texto
             import textwrap
             return "<br>".join(textwrap.wrap(texto, width=max_chars))
 
         questions_formatted = [quebrar_texto(q) for q in questions]
 
-        # 7. Plotagem
         fig_div = go.Figure()
 
-        # --- CAMADA 1: CENTRO (Desconheço) ---
-        # Adicionamos primeiro para ficarem colados no eixo 0
-        
-        # Metade Esquerda (Negativa)
         fig_div.add_trace(go.Bar(
             y=questions_formatted, x=desconheco_metade_neg,
             name='Desconheço', orientation='h', marker_color='#95a5a6',
-            legendgroup='grp_desc', showlegend=True, # Mostra legenda 1 vez
+            legendgroup='grp_desc', showlegend=True,
             hoverinfo='text', hovertext=hover_desconheco,
-            visible='legendonly' # <--- COMEÇA DESMARCADO/OCULTO
+            visible='legendonly'
         ))
 
-        # Metade Direita (Positiva)
         fig_div.add_trace(go.Bar(
             y=questions_formatted, x=desconheco_metade,
             name='Desconheço', orientation='h', marker_color='#95a5a6',
-            legendgroup='grp_desc', showlegend=False, # Não duplica legenda
+            legendgroup='grp_desc', showlegend=False,
             text=text_desconheco, textposition='inside',
             hoverinfo='text', hovertext=hover_desconheco,
-            visible='legendonly' # <--- COMEÇA DESMARCADO/OCULTO
+            visible='legendonly'
         ))
 
-        # --- CAMADA 2: EXTREMOS (Discordo e Concordo) ---
-        
-        # Discordo (Empilha na esquerda, depois do desconheço negativo)
         fig_div.add_trace(go.Bar(
             y=questions_formatted, x=discordo_neg_list,
-            name='Discordo', orientation='h', marker_color='#e74c3c', 
+            name='Discordo', orientation='h', marker_color='#e74c3c',
             text=[f"{x:.1f}%" if x > 1 else "" for x in discordo_list],
             textposition='inside', insidetextanchor='middle',
             hoverinfo='text+y', hovertext=[f"Discordância: {x:.1f}%" for x in discordo_list]
         ))
 
-        # Concordo (Empilha na direita, depois do desconheço positivo)
         fig_div.add_trace(go.Bar(
             y=questions_formatted, x=concordo_list,
             name='Concordo', orientation='h', marker_color='#2ecc71',
@@ -462,19 +467,17 @@ class AvaliacaoInstitucionalService(DataLoader):
             hoverinfo='text+y', hovertext=[f"Concordância: {x:.1f}%" for x in concordo_list]
         ))
 
-        # 8. Layout
         fig_div.update_layout(
-            barmode='relative', # O segredo do alinhamento central
+            barmode='relative',
             title=f"Saldo de Opinião: {dim_sel}",
             xaxis_title="% Rejeição <---> % Aprovação",
             yaxis=dict(title=""),
             bargap=0.3,
             legend_title_text='Sentimento',
-            height=max(400, len(questions) * 60 + 150), # Altura dinâmica
+            height=max(400, len(questions) * 60 + 150),
             margin=dict(l=10, r=10, t=80, b=20)
         )
 
-        # Linha de referência no zero
         fig_div.add_vline(x=0, line_width=1, line_color="black", opacity=0.3)
 
         return fig_div

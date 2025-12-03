@@ -56,6 +56,24 @@ class AvaliacaoDosCursosService(DataLoader):
         desconhecimento = len(df[df["VALOR_RESPOSTA"] == 0])
         return desconhecimento
     
+    def total_respondentes_ano_passado(self): 
+        qtd_respondentes_ano_atual = self.get_total_respondentes()
+        qtd_respondentes_ano_passado = 1000
+        pct_comparacao_ano_atual =(qtd_respondentes_ano_atual/qtd_respondentes_ano_passado - 1)*100
+        return pct_comparacao_ano_atual,qtd_respondentes_ano_passado
+    
+    def satisfacao_ano_passado(self):
+            pct_satisfacao_ano_passado = 40
+            return pct_satisfacao_ano_passado
+    
+    def insatisfacao_ano_passado(self):
+            pct_insatisfacao_ano_passado = 40
+            return pct_insatisfacao_ano_passado
+    
+    def desconhecimento_ano_passado(self):
+            pct_desconhecimento_ano_passado = 20
+            return pct_desconhecimento_ano_passado
+    
     def formatacao_curso_setor(self) -> list:
         df = self.df[['CURSO','SETOR_CURSO']].drop_duplicates()
 

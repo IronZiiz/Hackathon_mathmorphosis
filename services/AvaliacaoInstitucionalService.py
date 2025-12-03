@@ -59,7 +59,7 @@ class AvaliacaoInstitucionalService(DataLoader):
     
     def total_respondentes_ano_passado(self): 
         qtd_respondentes_ano_atual = self.total_respondentes_ano_atual()
-        qtd_respondentes_ano_passado = 50
+        qtd_respondentes_ano_passado = 500
         pct_comparacao_ano_atual =(qtd_respondentes_ano_atual/qtd_respondentes_ano_passado - 1)*100
         return pct_comparacao_ano_atual,qtd_respondentes_ano_passado
     
@@ -77,9 +77,22 @@ class AvaliacaoInstitucionalService(DataLoader):
 
         return pct_satisfacao_ano_atual
     
+    def satisfacao_ano_passado(self): 
+        pct_satisfacao_ano_passado = 50
+        return pct_satisfacao_ano_passado
+    
     def satisfacao_ano_passado(self):
-            pct_satisfacao_ano_passado = 10
+            pct_satisfacao_ano_passado = 40
             return pct_satisfacao_ano_passado
+    
+    def insatisfacao_ano_passado(self):
+            pct_insatisfacao_ano_passado = 40
+            return pct_insatisfacao_ano_passado
+    
+    def desconhecimento_ano_passado(self):
+            pct_desconhecimento_ano_passado = 20
+            return pct_desconhecimento_ano_passado
+    
     
     def insatisfacao_ano_atual(self):
         df = self.df_load_dados_institucional[['RESPOSTA']]
@@ -87,9 +100,7 @@ class AvaliacaoInstitucionalService(DataLoader):
         pct_insatisfacao_ano_atual = (df['RESPOSTA'].eq('Discordo').sum() / total_respostas ) * 100
         return pct_insatisfacao_ano_atual
     
-    def insatisfacao_ano_passado(self):
-        pct_insatisfacao_ano_passado = 10
-        return pct_insatisfacao_ano_passado 
+    
     
     def desconhecimento_ano_atual(self): 
         df = self.df_load_dados_institucional[['RESPOSTA']]
@@ -97,10 +108,6 @@ class AvaliacaoInstitucionalService(DataLoader):
         pct_desconhecimento_ano_atual = (df['RESPOSTA'].eq('Desconheço').sum() / total_respostas ) * 100
         return pct_desconhecimento_ano_atual
     
-    def desconhecimento_ano_passado(self): 
-        pct_desconhecimento_ano_passado = 10 
-        return pct_desconhecimento_ano_passado 
-
     def grafico_distribuicao_total_donut(self):
 
         COLOR_MAP = {

@@ -73,7 +73,7 @@ def avaliacao_institucional_view():
             label="Concordância",
             border=BORDER,
             value=f"{service.satisfacao_ano_atual():.2f}%",
-            delta=1,
+            delta=f"Ano passado:{service.satisfacao_ano_passado():.2f}%",
             delta_color="normal"
         )
         
@@ -82,8 +82,8 @@ def avaliacao_institucional_view():
             label="Discordância",
             border=BORDER,
             value=f"{service.insatisfacao_ano_atual():.2f}%",
-            delta=2,
-            delta_color="inverse"
+            delta=f"Ano passado: {service.insatisfacao_ano_passado():.2f}%",
+            delta_color="normal"
         )
         
     with col4:
@@ -91,7 +91,8 @@ def avaliacao_institucional_view():
             label="Desconhecimento",
             border=BORDER,
             value=f"{service.desconhecimento_ano_atual():.2f}%",
-            delta=1
+            delta=f"Ano passado:{service.desconhecimento_ano_passado():.2f}%",
+            delta_color="normal"
         )
     
          
@@ -236,8 +237,8 @@ def avaliacao_institucional_view():
     st.markdown("---")
     # ---------- #
 
-    with st.expander("Ver dados brutos (Frequências Absolutas) (TEMPORÁRIO)"):
-        st.dataframe(df) # Temp
+    with st.expander("Ver dados brutos (Frequências Absolutas) (Em desenvolvimento :3)"):
+        st.dataframe()
         message = "Lorem ipsum.\nStreamlit is cool."
         st.download_button(
             label="Download Dados brutos",
@@ -245,5 +246,6 @@ def avaliacao_institucional_view():
             file_name="message.txt",
             on_click="ignore",
             type="primary",
-            icon=":material/download:"
+            icon=":material/download:",
+            key= "download-dados-brutos-insitucional"
         )

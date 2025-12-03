@@ -58,11 +58,12 @@ def avaliacao_das_disciplinas_view():
 
     col1,col2,col3, col4 = st.columns(4)
     with col1:
+        pct_ano_passado, total_ano_passado = service.total_respondentes_ano_passado()
         st.metric(
             label="Total Respondentes",
             border=BORDER,
             value=service.get_total_respondentes_ano_atual(),
-            delta=f"% Ano passado: "
+            delta=f"{pct_ano_passado:.2f}% Ano passado: {total_ano_passado}"
         )
         
     with col2:
@@ -70,7 +71,7 @@ def avaliacao_das_disciplinas_view():
             label="Concordância",
             border=BORDER,
             value=f"{service.get_concordancia_atual():.2f}%",
-            delta=1,
+            delta=f"{service.satisfacao_ano_passado():.2f}% Ano passado",
             delta_color="normal"
         )
         
@@ -79,7 +80,7 @@ def avaliacao_das_disciplinas_view():
             label="Discordância",
             border=BORDER,
             value=f"{service.get_discordancia_atual():.2f}%",
-            delta=2,
+            delta=f"{service.insatisfacao_ano_passado():.2f}% Ano passado",
             delta_color="inverse"
         )
         
@@ -88,7 +89,7 @@ def avaliacao_das_disciplinas_view():
             label="Desconhecimento",
             border=BORDER,
             value=f"{service.get_desconhecimento():.2f}%",
-            delta=1
+            delta=f"{service.desconhecimento_ano_passado():.2f}% Ano passado"
         )
     
     select_box_value_disciplina_curso_setor = st.selectbox("Pesquise a disciplina de seu interesse",
@@ -244,8 +245,18 @@ def avaliacao_das_disciplinas_view():
   
 
     st.markdown("---")
-    with st.expander("Ver dados brutos (Frequências Absolutas) (TEMPORÁRIO0"):
+    with st.expander("Ver dados brutos (Frequências Absolutas) (Em desenvolvimento :3)"):
         st.dataframe()
-        st.download_button('Download Dados brutos',data="aa")
+        message = "Lorem ipsum.\nStreamlit is cool."
+        st.download_button(
+            label="Download Dados brutos",
+            data=message,
+            file_name="message.txt",
+            on_click="ignore",
+            type="primary",
+            icon=":material/download:",
+            key="dowload-dados-brutos-disciplinas"
+
+        )
 
     

@@ -48,11 +48,12 @@ def avaliacao_dos_cursos_view():
     col1,col2,col3, col4 = st.columns(4)
 
     with col1:
+        pct_comparacao, qtd_respondentes_ano_passado = service.total_respondentes_ano_passado()
         st.metric(
             label="Total Respondentes",
             border=BORDER,
             value=f"{service.get_total_respondentes()}",
-            delta=f"% Ano passado: "
+            delta=f"{pct_comparacao:.2f}% Ano passado: {qtd_respondentes_ano_passado}"
         )
         
     with col2:
@@ -60,7 +61,7 @@ def avaliacao_dos_cursos_view():
             label="Concordância",
             border=BORDER,
             value=f"{service.get_concordancia():.2f}%",
-            delta=1
+            delta=f"{service.satisfacao_ano_passado():.2f}% Ano passado"
         )
         
     with col3:
@@ -68,7 +69,7 @@ def avaliacao_dos_cursos_view():
             label="Discordância",
             border=BORDER,
             value=f"{service.get_discordancia():.2f}%",
-            delta=2
+            delta=f"{service.insatisfacao_ano_passado():.2f}% Ano passado"
         )
         
     with col4:
@@ -76,7 +77,7 @@ def avaliacao_dos_cursos_view():
             label="Desconhecimento",
             border=BORDER,
             value=f"{service.get_desconhecimento():.2f}%",
-            delta=1
+            delta=f"{service.desconhecimento_ano_passado():.2f}% Ano passado"
         )    
     select_box_value_curso_setor = st.selectbox(
         "Pesquise o curso de seu interesse",
@@ -302,16 +303,16 @@ def avaliacao_dos_cursos_view():
     st.markdown('---')
     # ------------ #
     
-    with st.expander("Ver dados brutos (Frequências Absolutas) (TEMPORÁRIO)"):
-        st.dataframe(service.df) # Temp
-        message = "Lorem ipsum.\nStreamlit is cool."
-        st.download_button(
-            key=2,
-            label="Download Dados brutos",
-            data=message,
-            file_name="message.txt",
-            on_click="ignore",
-            type="primary",
-            icon=":material/download:"
-        )
+    with st.expander("Ver dados brutos (Frequências Absolutas) (Em desenvolvimento :3)"):
+            st.dataframe()
+            message = "Lorem ipsum.\nStreamlit is cool."
+            st.download_button(
+                label="Download Dados brutos",
+                data=message,
+                file_name="message.txt",
+                on_click="ignore",
+                type="primary",
+                icon=":material/download:",
+                key= "download-dados-brutos-cursos"
+            )
     
